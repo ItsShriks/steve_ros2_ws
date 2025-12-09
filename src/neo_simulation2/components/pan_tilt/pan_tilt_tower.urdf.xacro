@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!-- Complete Pan-Tilt Tower with Dynamixel Motors and L515 Camera -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <xacro:macro name="pan_tilt_tower" params="parent_link use_gazebo">
+
+    <!-- Tower properties matching steve_description -->
+    <xacro:property name="tower_height" value="0.9"/>
+    <xacro:property name="profile_width" value="0.03"/>
+    <xacro:property name="mount_mass" value="1.0"/>
+
+    <material name="tower_grey">
+      <color rgba="0.7 0.7 0.7 1"/>
+    </material>
+
+    <!-- Fixed tower mount at base -->
+    <joint name="pan_tilt_tower_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="pan_tilt_tower_base"/>
+      <origin xyz="-0.2 0 1.214" rpy="0 0 0" />
+    </joint>
+    
+    <!-- Tower vertical support pole -->
+    <link name="pan_tilt_tower_base">
+      <visual>
+        <geometry>
+          <box size="${profile_width} ${profile_width} ${tower_height}"/>
+        </geometry>
+        <material name="tower_grey"/>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="${profile_width} ${profile_width} ${tower_height}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${mount_mass}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.05" ixy="0" ixz="0" iyy="0.05" iyz="0" izz="0.05"/>
+      </inertial>
+    </link>
+
+    <!-- Include Dynamixel pan-tilt mechanism -->
+    <xacro:include filename="$(find neo_simulation2)/components/dynamixel/steve_pan_tilt.xacro"/>
+    <xacro:steve_pan_tilt parent="pan_tilt_tower_base" name="pan_tilt">
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+    </xacro:steve_pan_tilt>
+
+    <!-- ROS2 Control for Pan-Tilt -->
+    <xacro:include filename="$(find neo_simulation2)/components/pan_tilt/pan_tilt.ros2_control.xacro"/>
+    <xacro:pan_tilt_ros2_control name="pan_tilt"/>
+
+
+    <!-- Camera with D435 mesh - EXACT steve mounting position -->
+    <joint name="pan_tilt_camera_joint" type="fixed">
+      <parent link="pan_tilt_tilt_bracket_link"/>
+      <child link="pan_tilt_camera_link"/>
+      <origin xyz="0 0.0423 -0.028" rpy="0 0 ${pi/2}"/>
+    </joint>
+
+    <link name="pan_tilt_camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://neo_simulation2/robots/mmo_700/meshes/cameras/d435/d435.dae" scale="1 1 1"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.09 0.025 0.025"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.072"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
+    </link>
+
+    <!-- Camera optical frames -->
+    <joint name="pan_tilt_camera_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+      <parent link="pan_tilt_camera_link"/>
+      <child link="pan_tilt_camera_optical_frame"/>
+    </joint>
+    <link name="pan_tilt_camera_optical_frame"/>
+
+    <!-- Gazebo depth camera plugin -->
+    <xacro:if value="${use_gazebo}">
+      <gazebo reference="pan_tilt_camera_link">
+        <sensor name="pan_tilt_camera" type="depth">
+          <update_rate>30</update_rate>
+          <camera>
+            <horizontal_fov>${70*pi/180}</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>9.0</far>
+            </clip>
+          </camera>
+          <plugin name="pan_tilt_camera_controller" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>pan_tilt_camera</namespace>
+              <remapping>image_raw:=color/image_raw</remapping>
+              <remapping>camera_info:=color/camera_info</remapping>
+              <remapping>depth/image_raw:=aligned_depth_to_color/image_raw</remapping>
+              <remapping>depth/camera_info:=aligned_depth_to_color/camera_info</remapping>
+              <remapping>points:=depth/color/points</remapping>
+            </ros>
+            <camera_name>pan_tilt_camera</camera_name>
+            <frame_name>pan_tilt_camera_optical_frame</frame_name>
+            <hack_baseline>0.05</hack_baseline>
+            <min_depth>0.1</min_depth>
+            <max_depth>9.0</max_depth>
+          </plugin>
+        </sensor>
+      </gazebo>
+    </xacro:if>
+
+    <!-- Gazebo materials -->
+    <xacro:if value="${use_gazebo}">
+      <gazebo reference="pan_tilt_tower_base">
+        <material>Gazebo/Grey</material>
+      </gazebo>
+      <!-- Dynamixel motor materials -->
+      <gazebo reference="pan_tilt_tilt_motor_base_link">
+        <material>Gazebo/Black</material>
+      </gazebo>
+      <gazebo reference="pan_tilt_pan_motor_base_link">
+        <material>Gazebo/Black</material>
+      </gazebo>
+      <!-- Bracket materials -->
+      <gazebo reference="pan_tilt_tilt_bracket_link">
+        <material>Gazebo/Grey</material>
+      </gazebo>
+      <gazebo reference="pan_tilt_pan_bracket_link">
+        <material>Gazebo/Grey</material>
+      </gazebo>
+    </xacro:if>
+
+  </xacro:macro>
+  
+</robot>

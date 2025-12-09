@@ -30,10 +30,6 @@
 	path = src/neo_sick_s300-2
 	url = https://github.com/neobotix/neo_sick_s300-2
 	branch = humble
-[submodule "src/neo_nav2_bringup"]
-	path = src/neo_nav2_bringup
-	url = https://github.com/neobotix/neo_nav2_bringup.git
-	branch = humble
 [submodule "src/neo_mpo_moveit2"]
 	path = src/neo_mpo_moveit2
 	url = https://github.com/neobotix/neo_mpo_moveit2.git
@@ -51,9 +47,6 @@
 [submodule "src/joystick_drivers"]
 	path = src/joystick_drivers
 	url = https://github.com/ros-drivers/joystick_drivers.git
-[submodule "src/neo_simulation2"]
-	path = src/neo_simulation2
-	url = https://github.com/RiddheshMore/neo_simulation2.git
 [submodule "src/ros2_robotiq_gripper"]
 	path = src/ros2_robotiq_gripper
 	url = https://github.com/PickNikRobotics/ros2_robotiq_gripper.git

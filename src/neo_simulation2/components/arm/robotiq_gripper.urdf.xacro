@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!-- This is the URDF file for Robotiq 2f 85 Gripper-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robotiq_gripper">
+            
+            <!-- Get tf_prefix from parent scope -->
+            <xacro:arg name="tf_prefix" default="ur5e"/>
+            <xacro:property name="tf_prefix" value="$(arg tf_prefix)"/>
+            
+            <!-- ur_adapter for gripper-->
+            <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro"/>
+            <xacro:ur_to_robotiq 
+                prefix="" 
+                parent="${tf_prefix}tool0" 
+                child="gripper_mount_link"
+                rotation="${pi/2}"
+                />
+
+            <!-- add gripper - using 2F-85 model which is available-->
+            <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro"/>
+            <xacro:robotiq_gripper name="robotiq_gripper" prefix="" parent="gripper_mount_link" use_fake_hardware="true">
+                <origin xyz="0 0 0" rpy="0 0 -${pi / 2}"/>
+            </xacro:robotiq_gripper>
+
+
+
+</robot>
+
