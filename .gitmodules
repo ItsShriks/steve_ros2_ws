@@ -53,3 +53,6 @@
 [submodule "src/neo_simulation2"]
 	path = src/neo_simulation2
 	url = git@github.com:ItsShriks/neo_simulation2.git
+[submodule "src/neo_nav2_bringup"]
+	path = src/neo_nav2_bringup
+	url = git@github.com:ItsShriks/neo_nav2_bringup.git
