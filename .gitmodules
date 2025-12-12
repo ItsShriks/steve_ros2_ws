@@ -38,15 +38,6 @@
 [submodule "src/joystick_drivers"]
 	path = src/joystick_drivers
 	url = git@github.com:ItsShriks/joystick_drivers.git
-[submodule "src/steve_simulation_moveit"]
-	path = src/steve_simulation_moveit
-	url = git@gitlab.igg.uni-bonn.de:hrl_students/steve/steve_simulation_moveit.git
-[submodule "src/steve_description"]
-	path = src/steve_description
-	url = git@gitlab.igg.uni-bonn.de:hrl_students/steve/steve_description.git
-[submodule "src/steve_pan_tilt_controller"]
-	path = src/steve_pan_tilt_controller
-	url = git@gitlab.igg.uni-bonn.de:hrl_students/steve/steve_pan_tilt_controller.git
 [submodule "src/neo_simulation2"]
 	path = src/neo_simulation2
 	url = git@github.com:ItsShriks/neo_simulation2.git
@@ -55,12 +46,3 @@
 	path = src/neo_nav2_bringup
 	url = git@github.com:ItsShriks/neo_nav2_bringup.git
 	branch = humble
-<<<<<<< HEAD
-[submodule "src/steve_moveit_config"]
-	path = src/steve_moveit_config
-	url = git@gitlab.igg.uni-bonn.de:hrl_students/steve/steve_moveit_config.git
-[submodule "src/neo_simulation"]
-	path = src/neo_simulation
-	url = git@gitlab.igg.uni-bonn.de:hrl_students/steve/neo_simulation.git
-=======
->>>>>>> 5bf60de6053654b5f6a7966f15d3657ab7c3f468
