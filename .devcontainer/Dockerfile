@@ -6,7 +6,7 @@ ARG IMAGE_SUFFIX=-desktop-full
 FROM $DOCKER_REPO:$ROS_DISTRO$IMAGE_SUFFIX
 
 # Define user args after FROM (defaults to match typical host)
-ARG USERNAME=ritz
+ARG USERNAME=$USER
 ARG USER_UID=1000
 ARG USER_GID=1000
 
@@ -33,11 +33,12 @@ RUN apt-get update && apt-get upgrade -y && \
      ros-$ROS_DISTRO-gazebo-ros-pkgs ros-$ROS_DISTRO-ros2-control ros-$ROS_DISTRO-ros2-controllers \
      ros-$ROS_DISTRO-gazebo-ros2-control ros-$ROS_DISTRO-gazebo-plugins ros-$ROS_DISTRO-teleop-twist-keyboard \
  && rm -rf /var/lib/apt/lists/*
+RUN --mount=type=ssh git submodule update --init --recursive
 ENV SHELL=/bin/bash
 
 # Source ROS environment automatically
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /home/$USERNAME/.bashrc
-RUN echo "source /home/ws/install/setup.bash" >> /home/$USERNAME/.bashrc
+RUN echo "source /home/steve_ros2_ws/install/setup.bash" >> /home/$USERNAME/.bashrc
 
 # Set the default user
 USER $USERNAME

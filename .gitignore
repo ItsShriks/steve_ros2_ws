@@ -1,3 +1,91 @@
-/build/
-/install/
-/log/
+# ------------------------------
+# ROS 2 Humble / Colcon
+# ------------------------------
+
+# Colcon build artifacts
+build/
+install/
+log/
+
+# colcon test results
+test_results/
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# C/C++ build files
+*.o
+*.so
+*.a
+*.out
+
+# ROS 2 parameters cache
+*.yaml~
+
+# ------------------------------
+# VSCode / IDE-specific
+# ------------------------------
+
+# VSCode config
+.vscode/
+.history/
+
+# CLion / JetBrains
+.idea/
+cmake-build-*/
+
+# QtCreator
+*.user
+
+# ------------------------------
+# System / OS ignoring
+# ------------------------------
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux / other junk
+Thumbs.db
+desktop.ini
+
+# ------------------------------
+# Python venv
+# ------------------------------
+
+venv/
+env/
+*.egg-info/
+.eggs/
+
+# ------------------------------
+# Launch / bag files
+# ------------------------------
+
+# rosbag2 files
+*.db3
+*.mcap
+*.yaml   # auto-generated rosbag metadata
+
+# Temporary log files
+*.log
+
+# ------------------------------
+# Other common ROS stuff
+# ------------------------------
+
+# RViz, Gazebo temporary data
+rviz/*.rviz~
+.gazebo/
+gz-transport/
+
+# colcon metadata cache
+.colcon/
+
+# Local config backups
+*.bak
+*.swp
+*.swo
