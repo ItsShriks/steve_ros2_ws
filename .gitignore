@@ -89,3 +89,5 @@ gz-transport/
 *.bak
 *.swp
 *.swo
+frames_*.gv
+frames_*.pdf
