@@ -13,8 +13,8 @@
     //         "IMAGE_SUFFIX": "-desktop-full"
     //     }
     // },
-    "workspaceFolder": "/home/ws",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ws,type=bind",
+    "workspaceFolder": "/home/nakhyes1/steve_ros2_ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/nakhyes1/steve_ros2_ws,type=bind",
     "customizations": {
         "vscode": {
             "extensions": [

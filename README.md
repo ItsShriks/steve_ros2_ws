@@ -94,24 +94,27 @@ This workspace is configured with a DevContainer for easy setup.
 Since the DevContainer is configured to build from source, you can also build and run the image manually:
 1. Build the image:
    ```bash
-docker build \
-    --ssh default \
-    --build-arg DOCKER_REPO=osrf/ros \
-    --build-arg ROS_DISTRO=humble \
-    --build-arg IMAGE_SUFFIX=-desktop-full \
-    --build-arg USERNAME=$USER \
-    -t test_nav2:latest \
-    -f .devcontainer/Dockerfile .
+   docker build \
+  --network=host \
+  --build-arg DOCKER_REPO=osrf/ros \
+  --build-arg ROS_DISTRO=humble \
+  --build-arg IMAGE_SUFFIX=-desktop-full \
+  --build-arg USERNAME=$(whoami) \
+  --build-arg USER_UID=$(id -u) \
+  --build-arg USER_GID=$(id -g) \
+  -t test_nav2:latest \
+  -f .devcontainer/Dockerfile .
    ```
 
 2. Run the container:
    ```bash
    docker run -it --rm --net=host \
-    -e DISPLAY=$DISPLAY \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v $(pwd):/home/steve_ros2_ws \
-    -v ~/.ssh:/home/$USER/.ssh \
-    test_nav2:latest
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v $(pwd):/home/steve_ros2_ws \
+  -v ~/.ssh:/home/$(whoami)/.ssh \
+  -w /home/steve_ros2_ws \
+  test_nav2:latest
    ```
 ---
 For more details, see the [Neobotix ROS2 simulation documentation](https://neobotix-docs.de/ros/ros2/simulation_classic.html) and the [modern Gazebo migration guide](https://neobotix-docs.de/ros/ros2/simulation_modern.html).

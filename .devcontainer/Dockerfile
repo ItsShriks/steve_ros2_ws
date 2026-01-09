@@ -24,7 +24,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Install additonal packages - add any that you need
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends python3-pip python-is-python3 ssh neovim git python3-tqdm python3-requests \
-    ros-$ROS_DISTRO-libg2o ros-$ROS_DISTRO-dwb-critics ros-$ROS_DISTRO-nav2-core ros-$ROS_DISTRO-nav2-costmap-2d \
+    ros-$ROS_DISTRO-libg2o ros-$ROS_DISTRO-robotiq-description ros-$ROS_DISTRO-dwb-critics ros-$ROS_DISTRO-nav2-core ros-$ROS_DISTRO-nav2-costmap-2d \
     ros-$ROS_DISTRO-nav2-msgs ros-$ROS_DISTRO-nav2-util ros-$ROS_DISTRO-nav2-bringup ros-$ROS_DISTRO-librealsense2 \
     ros-$ROS_DISTRO-diagnostic-updater ros-$ROS_DISTRO-launch-pytest ros-$ROS_DISTRO-moveit-kinematics ros-$ROS_DISTRO-moveit-planners-ompl \
     ros-$ROS_DISTRO-moveit-ros-move-group ros-$ROS_DISTRO-moveit-ros-visualization ros-$ROS_DISTRO-moveit-servo ros-$ROS_DISTRO-moveit-simple-controller-manager \
@@ -33,13 +33,11 @@ RUN apt-get update && apt-get upgrade -y && \
      ros-$ROS_DISTRO-gazebo-ros-pkgs ros-$ROS_DISTRO-ros2-control ros-$ROS_DISTRO-ros2-controllers \
      ros-$ROS_DISTRO-gazebo-ros2-control ros-$ROS_DISTRO-gazebo-plugins ros-$ROS_DISTRO-teleop-twist-keyboard \
  && rm -rf /var/lib/apt/lists/*
-RUN --mount=type=ssh git submodule update --init --recursive
 ENV SHELL=/bin/bash
 
 # Source ROS environment automatically
 RUN echo "source /opt/ros/$ROS_DISTRO/setup.bash" >> /home/$USERNAME/.bashrc
-RUN echo "source /home/steve_ros2_ws/install/setup.bash" >> /home/$USERNAME/.bashrc
-
+#RUN echo "source /home/$USERNAME/steve_ros2_ws/install/setup.bash" >> /home/$USERNAME/.bashrc
 # Set the default user
 USER $USERNAME
 CMD ["/bin/bash"]
