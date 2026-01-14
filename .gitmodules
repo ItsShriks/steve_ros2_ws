@@ -7,3 +7,9 @@
 	path = src/neo_nav2_bringup
 	url = git@github.com:ItsShriks/neo_nav2_bringup.git
 	branch = humble
+[submodule "src/steve_perception"]
+	path = src/steve_perception
+	url = git@github.com:pratik-adhikari/steve_perception.git
+[submodule "src/realsense-ros"]
+	path = src/realsense-ros
+	url = git@github.com:ItsShriks/realsense-ros.git
