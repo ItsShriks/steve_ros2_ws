@@ -37,7 +37,7 @@ def generate_launch_description():
     lidar_1_node = Node(
         package='neo_sick_s300-2',
         executable='neo_sick_s300_node',
-        name='neo_sick_s300_node',
+        name='steve_sick_s300_node',
         namespace=robot_namespace.perform(context) + 'lidar_1',
         output='screen',
         parameters=[s300_1_config]
@@ -46,7 +46,7 @@ def generate_launch_description():
     lidar_1_filter_node = Node(
         package='neo_sick_s300-2',
         executable='neo_scan_filter_node',
-        name='neo_scan_filter_node',
+        name='steve_scan_filter_node',
         namespace=robot_namespace.perform(context) + 'lidar_1',
         output='screen',
         parameters=[s300_filter_1_config]
@@ -56,7 +56,7 @@ def generate_launch_description():
     lidar_2_node = Node(
         package='neo_sick_s300-2',
         executable='neo_sick_s300_node',
-        name='neo_sick_s300_node',
+        name='steve_sick_s300_node',
         namespace=robot_namespace.perform(context) + 'lidar_2',
         output='screen',
         parameters=[s300_2_config]
@@ -65,7 +65,7 @@ def generate_launch_description():
     lidar_2_filter_node = Node(
         package='neo_sick_s300-2',
         executable='neo_scan_filter_node',
-        name='neo_scan_filter_node',
+        name='steve_scan_filter_node',
         namespace=robot_namespace.perform(context) + 'lidar_2',
         output='screen',
         parameters=[s300_filter_2_config]

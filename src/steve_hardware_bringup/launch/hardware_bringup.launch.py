@@ -5,7 +5,6 @@ Launches all hardware components for the Steve robot
 """
 
 import os
-import xacro
 from pathlib import Path
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -15,10 +14,9 @@ from launch.actions import (
     OpaqueFunction
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, Command
+from launch.substitutions import LaunchConfiguration
 from launch.launch_context import LaunchContext
 from launch_ros.actions import Node
-from launch_ros.descriptions import ParameterValue
 
 
 def execution_stage(context: LaunchContext,
@@ -39,33 +37,32 @@ def execution_stage(context: LaunchContext,
     launches = []
     pkg_share = get_package_share_directory('steve_hardware_bringup')
     
-    # Setting up the URDF - use the one from steve_ros2_ws
-    urdf_path = Path('/Users/shrikar/neo_700/steve_ros2_ws/mmo_700.urdf')
-    if urdf_path.exists():
-        urdf = str(urdf_path)
-    else:
-        # Fallback to xacro if available
-        urdf = os.path.join(
-            get_package_share_directory('neo_simulation2'),
-            'robots/mpo_700',
-            'mpo_700.urdf.xacro'
+    
+    # Setting up the URDF - use the static URDF from steve_ros2_ws root
+    # This avoids xacro processing which requires robotiq_description
+    urdf_path = Path('/home/neobotix/steve_ros2_ws/mmo_700.urdf')
+    
+    if not urdf_path.exists():
+        raise FileNotFoundError(
+            f"URDF file not found at {urdf_path}. "
+            "Please ensure mmo_700.urdf exists in the workspace root."
         )
+    
+    # Read the URDF file content
+    with open(urdf_path, 'r') as urdf_file:
+        robot_description_content = urdf_file.read()
     
     # Start robot state publisher
     start_robot_state_publisher_cmd = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        name='robot_state_publisher',
+        name='steve_robot_state_publisher',
         output='screen',
         namespace=robot_namespace,
         parameters=[{
-            'robot_description': ParameterValue(
-                Command(['xacro', ' ', urdf, ' ', 'arm_type:=', arm_typ]),
-                value_type=str
-            ),
+            'robot_description': robot_description_content,
             'frame_prefix': rp_ns
-        }],
-        arguments=[urdf]
+        }]
     )
     
     launches.append(start_robot_state_publisher_cmd)
@@ -135,7 +132,7 @@ def execution_stage(context: LaunchContext,
     relay_topic_lidar1 = Node(
         package='topic_tools',
         executable='relay',
-        name='relay_lidar1',
+        name='steve_relay_lidar1',
         namespace=robot_namespace,
         output='screen',
         parameters=[{
@@ -147,7 +144,7 @@ def execution_stage(context: LaunchContext,
     relay_topic_lidar2 = Node(
         package='topic_tools',
         executable='relay',
-        name='relay_lidar2',
+        name='steve_relay_lidar2',
         namespace=robot_namespace,
         output='screen',
         parameters=[{

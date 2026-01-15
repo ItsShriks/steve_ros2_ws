@@ -34,7 +34,7 @@ def generate_launch_description():
     relayboard_node = Node(
         package='neo_relayboard_v2-2',
         executable='neo_relayboard_node',
-        name='neo_relayboard_node',
+        name='steve_relayboard_node',
         namespace=robot_namespace,
         output='screen',
         parameters=[relayboard_config]
@@ -44,7 +44,7 @@ def generate_launch_description():
     kinematics_node = Node(
         package='neo_kinematics_omnidrive2',
         executable='neo_omnidrive_node',
-        name='neo_omnidrive_node',
+        name='steve_omnidrive_node',
         namespace=robot_namespace,
         output='screen',
         parameters=[kinematics_config]
@@ -54,7 +54,7 @@ def generate_launch_description():
     socketcan_node = Node(
         package='neo_kinematics_omnidrive2',
         executable='neo_omnidrive_socketcan_node',
-        name='neo_omnidrive_socketcan_node',
+        name='steve_omnidrive_socketcan_node',
         namespace=robot_namespace,
         output='screen',
         parameters=[socket_config]

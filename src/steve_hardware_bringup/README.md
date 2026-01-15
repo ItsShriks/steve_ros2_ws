@@ -1,6 +1,6 @@
 # steve_hardware_bringup
 
-Hardware bringup package for the Steve robot. This package provides complete hardware initialization for the real robot, eliminating dependency on `mpo_700_workspace`.
+Hardware bringup package for the Steve robot. This package provides complete hardware initialization for the MPO-700
 
 ## Overview
 
@@ -26,6 +26,28 @@ Ensure the following devices are properly connected and have the correct permiss
 ### Network Configuration
 - UR5e arm must be accessible at IP: `192.168.1.102` (configurable)
 - Ensure network connectivity between robot PC and UR5e controller
+
+## Prerequisites
+
+### Required Neobotix Packages
+
+This package depends on Neobotix hardware driver packages that need to be added to your workspace. Run the provided script to copy them from `mpo_700_workspace`:
+
+```bash
+cd /Users/shrikar/neo_700/steve_ros2_ws
+./add_hardware_dependencies.sh
+```
+
+This script will copy the following packages:
+- `neo_relayboard_v2-2` - Relayboard driver
+- `neo_kinematics_omnidrive2` - Omnidirectional kinematics
+- `neo_sick_s300-2` - SICK S300 LiDAR driver
+- `neo_teleop2` - Teleoperation node
+- `neo_msgs2` - Neobotix message definitions
+- `neo_srvs2` - Neobotix service definitions
+- `neo_common2` - Common utilities
+- `serial-release` - Serial communication library
+- `joystick_drivers` - Joystick driver package
 
 ## Installation
 
@@ -214,11 +236,3 @@ This package depends on the following ROS2 packages:
 - `realsense2_camera`
 - `robot_state_publisher`
 - `topic_tools`
-
-## License
-
-MIT
-
-## Maintainer
-
-Your Name <your_email@example.com>

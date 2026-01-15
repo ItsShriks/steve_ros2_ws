@@ -32,7 +32,7 @@ def generate_launch_description():
     neo_teleop_node = Node(
         package='neo_teleop2',
         executable='neo_teleop2_node',
-        name='neo_teleop2_node',
+        name='steve_teleop_node',
         namespace=robot_namespace,
         output='screen',
         parameters=[teleop_config]
@@ -42,7 +42,7 @@ def generate_launch_description():
     joy_node = Node(
         package='joy',
         executable='joy_node',
-        name='joy_node',
+        name='steve_joy_node',
         namespace=robot_namespace,
         output='screen',
         parameters=[
