@@ -38,14 +38,14 @@ def execution_stage(context: LaunchContext,
     pkg_share = get_package_share_directory('steve_hardware_bringup')
     
     
-    # Setting up the URDF - use the static URDF from steve_ros2_ws root
-    # This avoids xacro processing which requires robotiq_description
-    urdf_path = Path('/home/neobotix/steve_ros2_ws/mmo_700.urdf')
+    # Use URDF from steve_hardware_bringup package
+    # This URDF is specifically for the real robot (no gripper, with pan-tilt)
+    urdf_path = os.path.join(pkg_share, 'urdf', 'mmo_700_real.urdf')
     
-    if not urdf_path.exists():
+    if not os.path.exists(urdf_path):
         raise FileNotFoundError(
             f"URDF file not found at {urdf_path}. "
-            "Please ensure mmo_700.urdf exists in the workspace root."
+            "Please ensure mmo_700_real.urdf exists in steve_hardware_bringup/urdf/"
         )
     
     # Read the URDF file content
