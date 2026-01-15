@@ -3,7 +3,7 @@
 
 ### 1. Clone the repository (with submodules)
 ```bash
-git clone --recurse-submodules <url> -b test_nav2
+git clone --recurse-submodules git@gitlab.igg.uni-bonn.de:hrl_students/ws2526_butler/steve_ros2_ws.git -b dev
 ```
 
 ### 2. Build the workspace
@@ -93,7 +93,8 @@ This workspace is configured with a DevContainer for easy setup.
 #### Option 2: Build and Run Manually
 Since the DevContainer is configured to build from source, you can also build and run the image manually:
 1. Build the image:
-   ```bash
+
+```bash
    docker build \
   --network=host \
   --build-arg DOCKER_REPO=osrf/ros \
@@ -104,10 +105,11 @@ Since the DevContainer is configured to build from source, you can also build an
   --build-arg USER_GID=$(id -g) \
   -t test_nav2:latest \
   -f .devcontainer/Dockerfile .
-   ```
+```
 
 2. Run the container:
-   ```bash
+
+```bash
    docker run -it --rm --net=host \
   -e DISPLAY=$DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -115,7 +117,8 @@ Since the DevContainer is configured to build from source, you can also build an
   -v ~/.ssh:/home/$(whoami)/.ssh \
   -w /home/steve_ros2_ws \
   test_nav2:latest
-   ```
+```
+
 ---
 For more details, see the [Neobotix ROS2 simulation documentation](https://neobotix-docs.de/ros/ros2/simulation_classic.html) and the [modern Gazebo migration guide](https://neobotix-docs.de/ros/ros2/simulation_modern.html).
 
