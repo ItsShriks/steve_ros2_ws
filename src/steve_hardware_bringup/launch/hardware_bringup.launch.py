@@ -17,6 +17,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch.launch_context import LaunchContext
 from launch_ros.actions import Node
+import xacro
 
 
 def execution_stage(context: LaunchContext,
@@ -38,19 +39,27 @@ def execution_stage(context: LaunchContext,
     pkg_share = get_package_share_directory('steve_hardware_bringup')
     
     
-    # Use URDF from steve_hardware_bringup package
-    # This URDF is specifically for the real robot (no gripper, with pan-tilt)
-    urdf_path = os.path.join(pkg_share, 'urdf', 'mmo_700_real.urdf')
+    # Process URDF with xacro (matches approach from all_hardware.launch.py)
+    # This uses the xacro wrapper that includes the correct URDF from neo_simulation2
+    urdf_file = os.path.join(pkg_share, 'urdf', 'mmo_700_real.urdf.xacro')
     
-    if not os.path.exists(urdf_path):
+    if not os.path.exists(urdf_file):
         raise FileNotFoundError(
-            f"URDF file not found at {urdf_path}. "
-            "Please ensure mmo_700_real.urdf exists in steve_hardware_bringup/urdf/"
+            f"URDF xacro file not found at {urdf_file}. "
+            "Please ensure mmo_700_real.urdf.xacro exists in steve_hardware_bringup/urdf/"
         )
     
-    # Read the URDF file content
-    with open(urdf_path, 'r') as urdf_file:
-        robot_description_content = urdf_file.read()
+    # Process xacro with appropriate arguments for real robot
+    robot_description_content = xacro.process_file(
+        urdf_file,
+        mappings={
+            'use_gazebo': 'false',
+            'arm_type': arm_typ,
+            'include_wrist_camera': enable_cam,
+            'include_depth_camera': 'false',
+            'include_pan_tilt': enable_pt
+        }
+    ).toxml()
     
     # Start robot state publisher
     start_robot_state_publisher_cmd = Node(
