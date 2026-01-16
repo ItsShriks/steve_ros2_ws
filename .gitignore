@@ -69,7 +69,7 @@ env/
 *.db3
 *.mcap
 *.yaml   # auto-generated rosbag metadata
-
+rosbag*/
 # Temporary log files
 *.log
 
