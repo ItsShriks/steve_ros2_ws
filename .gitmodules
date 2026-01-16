@@ -1,12 +1,12 @@
 [submodule "src/neo_simulation2"]
 	path = src/neo_simulation2
 	url = git@github.com:ItsShriks/neo_simulation2.git
-	branch = humble
+	branch = dev
 
 [submodule "src/neo_nav2_bringup"]
 	path = src/neo_nav2_bringup
 	url = git@github.com:ItsShriks/neo_nav2_bringup.git
-	branch = humble
+	branch = dev
 
 [submodule "src/steve_perception"]
 	path = src/steve_perception
@@ -15,8 +15,6 @@
 [submodule "src/realsense-ros"]
 	path = src/realsense-ros
 	url = git@github.com:ItsShriks/realsense-ros.git
-
-
 
 [submodule "src/steve_pan_tilt_controller"]
 	path = src/steve_pan_tilt_controller
