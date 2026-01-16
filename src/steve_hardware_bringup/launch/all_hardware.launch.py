@@ -22,8 +22,9 @@ def generate_launch_description():
     hardware_pkg = get_package_share_directory('steve_hardware_bringup')
     
     # --- 1. ROBOT STATE PUBLISHER ---
-    # Process the URDF with xacro
-    urdf_file = os.path.join(hardware_pkg, 'urdf', 'mmo_700_real.urdf.xacro')
+    # Process the URDF with xacro (use main URDF from neo_simulation2 directly)
+    neo_sim_pkg = get_package_share_directory('neo_simulation2')
+    urdf_file = os.path.join(neo_sim_pkg, 'robots', 'mmo_700', 'mmo_700.urdf.xacro')
     robot_description = xacro.process_file(
         urdf_file,
         mappings={

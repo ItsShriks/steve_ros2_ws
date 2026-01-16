@@ -39,14 +39,15 @@ def execution_stage(context: LaunchContext,
     pkg_share = get_package_share_directory('steve_hardware_bringup')
     
     
-    # Process URDF with xacro (matches approach from all_hardware.launch.py)
-    # This uses the xacro wrapper that includes the correct URDF from neo_simulation2
-    urdf_file = os.path.join(pkg_share, 'urdf', 'mmo_700_real.urdf.xacro')
+    # Process URDF with xacro (use main URDF from neo_simulation2 directly)
+    # The wrapper mmo_700_real.urdf.xacro doesn't properly instantiate the robot
+    neo_sim_pkg = get_package_share_directory('neo_simulation2')
+    urdf_file = os.path.join(neo_sim_pkg, 'robots', 'mmo_700', 'mmo_700.urdf.xacro')
     
     if not os.path.exists(urdf_file):
         raise FileNotFoundError(
             f"URDF xacro file not found at {urdf_file}. "
-            "Please ensure mmo_700_real.urdf.xacro exists in steve_hardware_bringup/urdf/"
+            "Please ensure neo_simulation2 package is installed"
         )
     
     # Process xacro with appropriate arguments for real robot
