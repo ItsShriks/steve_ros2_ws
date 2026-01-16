@@ -104,6 +104,20 @@ Visualization Manager:
           Value: true
         pan_tilt_camera_link:
           Value: true
+        pan_tilt_pan_bracket_link:
+          Value: true
+        pan_tilt_pan_motor_base_link:
+          Value: true
+        pan_tilt_pan_motor_link:
+          Value: true
+        pan_tilt_tilt_bracket_link:
+          Value: true
+        pan_tilt_tilt_motor_base_link:
+          Value: true
+        pan_tilt_tilt_motor_link:
+          Value: true
+        pan_tilt_tower_base:
+          Value: true
         robotiq_85_base_link:
           Value: true
         robotiq_85_left_finger_link:
@@ -122,19 +136,9 @@ Visualization Manager:
           Value: true
         ur5eflange:
           Value: true
-        ur5eforearm_link:
-          Value: true
         ur5eft_frame:
           Value: true
-        ur5eshoulder_link:
-          Value: true
         ur5etool0:
-          Value: true
-        ur5eupper_arm_link:
-          Value: true
-        ur5ewrist_1_link:
-          Value: true
-        ur5ewrist_2_link:
           Value: true
         ur5ewrist_3_link:
           Value: true
@@ -167,28 +171,7 @@ Visualization Manager:
                 ur5ebase:
                   {}
                 ur5ebase_link_inertia:
-                  ur5eshoulder_link:
-                    ur5eupper_arm_link:
-                      ur5eforearm_link:
-                        ur5ewrist_1_link:
-                          ur5ewrist_2_link:
-                            ur5ewrist_3_link:
-                              ur5eflange:
-                                ur5etool0:
-                                  ur_to_robotiq_link:
-                                    gripper_mount_link:
-                                      robotiq_85_base_link:
-                                        {}
-                                  wrist_d405_mount:
-                                    wrist_camera_link:
-                                      wrist_camera_color_frame:
-                                        wrist_camera_color_optical_frame:
-                                          {}
-                                      wrist_camera_depth_frame:
-                                        wrist_camera_depth_optical_frame:
-                                          {}
-                              ur5eft_frame:
-                                {}
+                  {}
             lidar_1_link:
               {}
             lidar_2_link:
@@ -205,19 +188,22 @@ Visualization Manager:
             mpo_700_caster_front_right_link:
               mpo_700_wheel_front_right_link:
                 {}
+            pan_tilt_tower_base:
+              pan_tilt_tilt_motor_base_link:
+                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
       Class: rviz_default_plugins/RobotModel
       Collision Enabled: false
       Description File: /home/neobotix/steve_ros2_ws/src/neo_simulation2/robots/mmo_700/mmo_700_processed.urdf
-      Description Source: File
+      Description Source: Topic
       Description Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: ""
+        Value: /robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -293,42 +279,97 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        pan_tilt_camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        pan_tilt_camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        pan_tilt_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pan_tilt_pan_bracket_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pan_tilt_pan_motor_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pan_tilt_pan_motor_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        pan_tilt_tilt_bracket_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pan_tilt_tilt_motor_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pan_tilt_tilt_motor_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        pan_tilt_tower_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         robotiq_85_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_left_finger_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_left_finger_tip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_left_inner_knuckle_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_left_knuckle_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_right_finger_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_right_finger_tip_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_right_inner_knuckle_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         robotiq_85_right_knuckle_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         ur5ebase:
           Alpha: 1
           Show Axes: false
@@ -388,6 +429,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         wrist_camera_color_frame:
           Alpha: 1
           Show Axes: false
@@ -557,9 +599,9 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 4.869291305541992
-        Y: 4.156471252441406
-        Z: 6.528165817260742
+        X: 2.9101130962371826
+        Y: 4.767124652862549
+        Z: 6.051062107086182
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false

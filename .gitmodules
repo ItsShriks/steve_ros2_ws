@@ -15,6 +15,7 @@
 [submodule "src/realsense-ros"]
 	path = src/realsense-ros
 	url = git@github.com:ItsShriks/realsense-ros.git
+	branch = dev
 
 [submodule "src/steve_pan_tilt_controller"]
 	path = src/steve_pan_tilt_controller
