@@ -21,3 +21,7 @@
 	path = src/steve_pan_tilt_controller
 	url = git@github.com:RiddheshMore/steve_pan_tilt_controller.git
 	branch = main
+[submodule "src/steve_hardware_bringup"]
+	path = src/steve_hardware_bringup
+	url = git@github.com:ItsShriks/steve_hardware_bringup.git
+	branch = dev
