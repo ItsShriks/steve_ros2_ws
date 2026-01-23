@@ -20,8 +20,49 @@
 [submodule "src/steve_pan_tilt_controller"]
 	path = src/steve_pan_tilt_controller
 	url = git@github.com:RiddheshMore/steve_pan_tilt_controller.git
-	branch = main
+	branch = dev
+
 [submodule "src/steve_hardware_bringup"]
 	path = src/steve_hardware_bringup
 	url = git@github.com:ItsShriks/steve_hardware_bringup.git
+	branch = dev
+
+[submodule "src/neo_sick_s300-2"]
+	path = src/neo_sick_s300-2
+	url = git@github.com:ItsShriks/neo_sick_s300-2.git
+	branch = dev
+
+[submodule "src/neo_teleop2"]
+        path = src/neo_teleop2
+        url = git@github.com:ItsShriks/neo_teleop2.git
+        branch = dev
+
+[submodule "src/neo_relayboard_v2-2"]
+	path = src/neo_relayboard_v2-2
+	url = git@github.com:ItsShriks/neo_relayboard_v2-2.git
+	branch = dev
+
+[submodule "src/neo_srvs2"]
+	path = src/neo_srvs2
+	url = git@github.com:ItsShriks/neo_srvs2.git
+	branch = dev
+
+[submodule "src/neo_msgs2"]
+	path = src/neo_msgs2
+	url = git@github.com:ItsShriks/neo_msgs2.git
+	branch = dev
+
+[submodule "src/joystick_drivers"]
+	path = src/joystick_drivers
+	url = git@github.com:ItsShriks/joystick_drivers.git
+	branch = dev
+
+[submodule "src/neo_kinematics_omnidrive2"]
+	path = src/neo_kinematics_omnidrive2
+	url = git@github.com:ItsShriks/neo_kinematics_omnidrive2.git
+	branch = dev
+
+[submodule "src/neo_common2"]
+	path = src/neo_common2
+	url = git@github.com:ItsShriks/neo_common2.git
 	branch = dev
