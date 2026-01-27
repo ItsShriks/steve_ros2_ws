@@ -50,11 +50,28 @@ This automatically starts:
 ros2 launch neo_nav2_bringup localization_simulation.launch.py map:=/path/to/your/map.yaml
 ```
 
+**Using a different world:**
+```bash
+ros2 launch neo_nav2_bringup localization_simulation.launch.py world:=neo_track1
+```
+
+**Using custom world and map:**
+```bash
+ros2 launch neo_nav2_bringup localization_simulation.launch.py \
+  world:=/path/to/custom.world \
+  map:=/path/to/custom_map.yaml
+```
+
 #### Alternative: SLAM Mapping (Build Your Own Map)
 
 If you want to create a new map instead of using a pre-built one:
 ```bash
 ros2 launch neo_nav2_bringup slam_simulation.launch.py
+```
+
+**Using a different world for SLAM:**
+```bash
+ros2 launch neo_nav2_bringup slam_simulation.launch.py world:=neo_track1
 ```
 
 Then in a **separate terminal**, launch navigation:
@@ -76,6 +93,15 @@ This starts:
 4. The robot will **autonomously navigate** to the goal, avoiding obstacles
 
 **Note:** Navigation goals must be set within the mapped area (visible in RViz as colored regions).
+
+#### Available Worlds
+
+The simulation supports the following Gazebo worlds:
+- `neo_workshop` (default) - Indoor workshop environment
+- `neo_track1` - Outdoor track environment  
+- Custom worlds - Provide full path to your `.world` file
+
+> **Tip:** When using a custom world with localization, ensure you have a corresponding map file.
 
 ### Visuals
 ![Gazebo Simulation](images/gazebo.png)
