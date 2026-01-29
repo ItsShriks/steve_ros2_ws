@@ -66,3 +66,8 @@
 	path = src/neo_common2
 	url = git@github.com:ItsShriks/neo_common2.git
 	branch = dev
+
+[submodule "aws-robomaker-small-house-world"]
+	path = src/aws-robomaker-small-house-world
+	url = https://github.com/aws-robotics/aws-robomaker-small-house-world.git
+	branch = ros2
