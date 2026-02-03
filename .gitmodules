@@ -11,6 +11,7 @@
 [submodule "src/steve_perception"]
 	path = src/steve_perception
 	url = git@github.com:pratik-adhikari/steve_perception.git
+	branch = dev
 
 [submodule "src/realsense-ros"]
 	path = src/realsense-ros
