@@ -5,8 +5,8 @@ ROS2 Humble workspace for the Steve Butler robot project - an omnidirectional mo
 ## Contributors
 
 - **Shrikar Nakhye** - [GitHub](https://github.com/Itsshriks) | [Email](mailto:nakhyeshrikar@icloud.com)
-- **Pratik Adhikari** - [GitHub](https://github.com/pratik-adhikari) | [Email](mailto:pratik.adhikari@smail.inf.h-brs.de)
-- **Riddhesh More** - [GitHub](https://github.com/RiddheshMore) | [Email](mailto:riddhesh.more@smail.inf.h-brs.de)
+- **Pratik Adhikari** - [GitHub](https://github.com/pratik-adhikari) | [Email](mailto:pratikadhikari.de@gmail.com)
+- **Riddhesh More** - [GitHub](https://github.com/RiddheshMore) | [Email](mailto:riddheshmore311@gmail.com)
 
 ---
 
