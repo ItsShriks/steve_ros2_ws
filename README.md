@@ -123,7 +123,7 @@ sudo apt install \
 ```
 
 ### Additional Dependencies
-- **neo_mpo_700-2**: Base platform drivers
+- **steve_hardware_bringup**: Hardware initialization and component drivers
 - **ur_robot_driver**: UR arm control
 
 
