@@ -1,6 +1,6 @@
 #!/bin/bash
 # ROS2 Navigation Simulation - Dependency Installation Script
-# This script installs all required dependencies for the neo_simulation2 workspace
+# This script installs all required dependencies for the steve_simulation workspace
 
 set -e  # Exit on error
 
@@ -20,7 +20,7 @@ sudo apt install -y \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
     ros-humble-gazebo-ros2-control \
-    ros-humble-robotiq-description  
+    ros-humble-robotiq-description
 
 # Install Nav2 packages
 echo ""
@@ -79,5 +79,5 @@ echo "3. Source the workspace:"
 echo "   source install/setup.bash"
 echo ""
 echo "4. Launch the simulation:"
-echo "   ros2 launch neo_nav2_bringup localization_simulation.launch.py"
+echo "   ros2 launch steve_navigation localization_simulation.launch.py"
 echo ""

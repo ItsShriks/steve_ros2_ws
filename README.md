@@ -41,14 +41,14 @@ Perception pipeline for object detection, scene understanding, and visual proces
 **See detailed documentation**: [steve_perception/README.md](src/steve_perception/README.md)
 
 ### steve_navigation
-Navigation stack for autonomous path planning and obstacle avoidance. Currently implemented as `neo_nav2_bringup` (will be renamed in future updates).
+Navigation stack for autonomous path planning and obstacle avoidance. Currently implemented as `steve_navigation` (will be renamed in future updates).
 
-**See detailed documentation**: [neo_nav2_bringup/README.md](src/neo_nav2_bringup/README.md)
+**See detailed documentation**: [steve_navigation/README.md](src/steve_navigation/README.md)
 
 ### steve_simulation
-Gazebo-based simulation environment for testing navigation, manipulation, and perception. Currently implemented as `neo_simulation2` (will be renamed in future updates).
+Gazebo-based simulation environment for testing navigation, manipulation, and perception. Currently implemented as `steve_simulation` (will be renamed in future updates).
 
-**See detailed documentation**: [neo_simulation2/README.md](src/neo_simulation2/README.md)
+**See detailed documentation**: [steve_simulation/README.md](src/steve_simulation/README.md)
 
 ### steve_command_grounding
 Natural language command understanding and grounding to robot actions, enabling semantic navigation and task execution.
@@ -146,7 +146,7 @@ sudo apt install \
 - Check ping: `ping 10.7.4.213`
 - Ensure firewall allows ROS2 DDS traffic
 
-For detailed troubleshooting, see the [navigation package README](src/neo_nav2_bringup/README.md#troubleshooting).
+For detailed troubleshooting, see the [navigation package README](src/steve_navigation/README.md#troubleshooting).
 
 ---
 
@@ -166,4 +166,4 @@ This project is developed at the Humanoid Robots Lab, University of Bonn.
 
 ---
 
-**Note**: Package naming is currently in transition. Several packages (`neo_nav2_bringup`, `neo_simulation2`, `steve_hardware_bringup`) will be renamed to follow the `steve_*` naming convention in future updates.
+**Note**: Package naming is currently in transition. Several packages (`steve_navigation`, `steve_simulation`, `steve_hardware_bringup`) will be renamed to follow the `steve_*` naming convention in future updates.
