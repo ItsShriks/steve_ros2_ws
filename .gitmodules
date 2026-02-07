@@ -1,13 +1,3 @@
-    [submodule "src/steve_simulation"]
-	path = src/steve_simulation
-	url = git@github.com:ItsShriks/steve_simulation.git
-	branch = dev
-
-[submodule "src/steve_navigation"]
-	path = src/steve_navigation
-	url = git@github.com:ItsShriks/steve_navigation.git
-	branch = dev
-
 [submodule "src/steve_perception"]
 	path = src/steve_perception
 	url = git@github.com:pratik-adhikari/steve_perception.git
@@ -61,4 +51,12 @@
 [submodule "src/neo_common2"]
 	path = src/neo_common2
 	url = git@github.com:ItsShriks/neo_common2.git
+	branch = dev
+[submodule "src/steve_simulation"]
+	path = src/steve_simulation
+	url = git@github.com:ItsShriks/steve_simulation.git
+	branch = dev
+[submodule "src/steve_navigation"]
+	path = src/steve_navigation
+	url = git@github.com:ItsShriks/steve_navigation.git
 	branch = dev
