@@ -35,7 +35,7 @@ RUN apt-get update && apt-get upgrade -y && \
     ros-$ROS_DISTRO-rtabmap-ros \
     python3-scipy \
     && rm -rf /var/lib/apt/lists/* \
-    && pip3 install --no-cache-dir open3d
+    && pip3 install --no-cache-dir open3d dynamixel-sdk
 ENV SHELL=/bin/bash
 
 # NVIDIA GPU Environment Variables (Critical for Passthrough)

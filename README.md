@@ -1,117 +1,33 @@
 # steve_ros2_ws
 
-ROS2 Humble workspace for the Steve Butler robot project - an omnidirectional mobile manipulator with advanced perception and navigation capabilities.
-
-## Contributors
-
-- **Shrikar Nakhye** - [GitHub](https://github.com/Itsshriks) | [Email](mailto:nakhyeshrikar@icloud.com)
-- **Pratik Adhikari** - [GitHub](https://github.com/pratik-adhikari) | [Email](mailto:pratikadhikari.de@gmail.com)
-- **Riddhesh More** - [GitHub](https://github.com/RiddheshMore) | [Email](mailto:riddheshmore311@gmail.com)
+**ROS2 Humble workspace for the Steve Butler robot project** — an omnidirectional mobile manipulator designed for research in human-robot interaction, navigation, and manipulation.
 
 ---
 
 ## Overview
 
-This workspace provides a complete ROS2 stack for the Steve Butler robot, supporting both simulation and real hardware deployment. The robot features:
-- MMO-700 omnidirectional mobile base
-- UR5e robotic arm with Robotiq gripper
-- L515 RealSense camera on pan-tilt unit
-- Dual LiDAR sensors for 360° obstacle detection
-- Autonomous navigation with Nav2
-- SLAM mapping capabilities
+This workspace provides a complete software stack for the **Steve Butler** robot, supporting both high-fidelity Gazebo simulation and real hardware deployment. The robot features:
+- **Neobotix MMO-700** omnidirectional mobile base
+- **UR5e robotic arm** with Robotiq gripper
+- **L515 RealSense camera** on a custom pan-tilt unit
+- **Dual SICK LiDAR sensors** for 360° obstacle detection
+- **Autonomous Navigation & SLAM** using the Nav2 stack
 
 ---
 
-## Robot Communication (On Ubuntu 20/22)
+## Installation
 
-When connecting to the physical robot:
-
-- **Static IP**: `10.7.4.213`
-- **Ethernet Port**: `192.168.60.90`
-
-Configure your network settings to match the robot's subnet for proper communication.
-
----
-
-## Package Descriptions
-
-### steve_perception
-Perception pipeline for object detection, scene understanding, and visual processing using the L515 RealSense camera.
-
-**See detailed documentation**: [steve_perception/README.md](src/steve_perception/README.md)
-
-### steve_navigation
-Navigation stack for autonomous path planning and obstacle avoidance. 
-
-**See detailed documentation**: [steve_navigation/README.md](src/steve_navigation/README.md)
-
-### steve_simulation
-Gazebo-based simulation environment for testing navigation, manipulation, and perception.
-
-**See detailed documentation**: [steve_simulation/README.md](src/steve_simulation/README.md)
-
-### steve_command_grounding
-Natural language command understanding and grounding to robot actions, enabling semantic navigation and task execution.
-
-**See detailed documentation**: [steve_command_grounding/README.md](src/steve_command_grounding/README.md)
-
-### steve_hardware_bringup
-Hardware initialization and driver management for the physical robot.
-
-**See detailed documentation**: [steve_hardware_bringup/README.md](src/steve_hardware_bringup/README.md)
-
-### steve_essentials
-Core utilities, configuration files, and shared resources used across all packages.
-
-### steve_manipulation
-Manipulation control for the UR5e arm and Robotiq gripper, including motion planning and grasp execution.
-(IN PROGRESS)
-
----
-
-## Docker Support
-
-This workspace is configured with a DevContainer for easy setup and consistent development environments.
-
-### Option 1: VSCode DevContainer (Recommended)
-1. Open the workspace in VSCode
-2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
-3. Select **"Dev Containers: Reopen in Container"**
-4. VSCode will automatically build and configure the environment
-
-### Option 2: Manual Docker Build
-Build the Docker image manually:
+### 1. Clone the Repository
+Clone the workspace ensuring all submodules (including `steve_essentials` dependencies) are initialized:
 
 ```bash
-docker build \
-  --network=host \
-  --build-arg DOCKER_REPO=osrf/ros \
-  --build-arg ROS_DISTRO=humble \
-  --build-arg IMAGE_SUFFIX=-desktop-full \
-  --build-arg USERNAME=$(whoami) \
-  --build-arg USER_UID=$(id -u) \
-  --build-arg USER_GID=$(id -g) \
-  -t steve_ros2:latest \
-  -f .devcontainer/Dockerfile .
+git clone --recurse-submodules git@gitlab.igg.uni-bonn.de:hrl_students/ws2526_butler/steve_ros2_ws.git -b dev
+cd steve_ros2_ws
 ```
 
-Run the container:
+### 2. Install Dependencies
+Install required ROS 2 packages:
 
-```bash
-docker run -it --rm --net=host \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v $(pwd):/home/steve_ros2_ws \
-  -v ~/.ssh:/home/$(whoami)/.ssh \
-  -w /home/steve_ros2_ws \
-  steve_ros2:latest
-```
-
----
-
-## Dependencies
-
-### Required ROS2 Packages
 ```bash
 sudo apt install \
   ros-humble-nav2-bringup \
@@ -122,48 +38,101 @@ sudo apt install \
   ros-humble-realsense2-camera
 ```
 
-### Additional Dependencies
-- **steve_hardware_bringup**: Hardware initialization and component drivers
-- **ur_robot_driver**: UR arm control
-
-
----
-
-## Troubleshooting
-
-### Build Issues
-- Ensure all submodules are cloned: `git submodule update --init --recursive`
-- Source ROS2: `source /opt/ros/humble/setup.bash`
-- Clean build: `rm -rf build install log && colcon build`
-
-### Simulation Issues
-- Check Gazebo version: `gazebo --version`
-- Verify DISPLAY variable: `echo $DISPLAY`
-- For Docker: Enable X11 forwarding with `xhost +local:docker`
-
-### Robot Connection Issues
-- Verify network configuration matches robot IP
-- Check ping: `ping 10.7.4.213`
-- Ensure firewall allows ROS2 DDS traffic
-
-For detailed troubleshooting, see the [navigation package README](src/steve_navigation/README.md#troubleshooting).
+### 3. Build the Workspace
+```bash
+source /opt/ros/humble/setup.bash
+colcon build --symlink-install
+source install/setup.bash
+```
 
 ---
 
-## Support
+## Quick Start (Simulation)
 
-For issues or questions:
-1. Check package-specific documentation
-2. Review troubleshooting sections
-3. Verify hardware connections (for real robot)
-4. Check ROS2 logs: `ros2 launch --log-level debug`
+Launch the full simulation environment with localization and navigation enabled:
+
+```bash
+ros2 launch steve_navigation localization.launch.py use_sim_time:=true
+```
+
+This command will:
+1. Start the Gazebo simulation (default: `small_house` world).
+2. Launch RViz for visualization.
+3. Start the Nav2 stack with AMCL localization.
+
+**To create a map using SLAM:**
+```bash
+ros2 launch steve_navigation slam.launch.py use_sim_time:=true
+```
 
 ---
 
-## License
+## Package Descriptions
 
-This project is developed at the Humanoid Robots Lab, University of Bonn.
+### `steve_essentials`
+**Foundational Drivers & Utilities**  
+The core package containing all hardware drivers (LiDAR, Base, Camera), custom message definitions, and kinematics solvers. It consolidates dependencies like `neo_kinematics_omnidrive2`, `realsense-ros`, and `joy`.  
+[Read more](src/steve_essentials/README.md)
+
+### `steve_navigation`
+**Navigation Stack**  
+Provides launch files and configurations for autonomous navigation, SLAM, and localization. Supports both simulation and real hardware.  
+[Read more](src/steve_navigation/README.md)
+
+### `steve_simulation`
+**Gazebo Simulation**  
+Contains robot description files (URDF/Xacro), world files, and simulation-specific launch configurations.  
+[Read more](src/steve_simulation/README.md)
+
+### `steve_perception`
+**Vision Pipeline**  
+Perception stack using the L515 RealSense camera for object detection, scene understanding, and visual processing.  
+[Read more](src/steve_perception/README.md)
+
+### `steve_command_grounding`
+**HRI & Semantics**  
+Natural language command understanding and grounding to robot actions, enabling semantic navigation and task execution.  
+[Read more](src/steve_command_grounding/README.md)
+
+### `steve_hardware_bringup`
+**Robot Startup**  
+Scripts and launch files for initializing the physical robot hardware. Managed automatically via `ROS_AUTOSTART.sh`.  
+[Read more](src/steve_hardware_bringup/README.md)
+
+### `steve_manipulation` (In Progress)
+**Arm Control**  
+Motion planning and control for the UR5e arm and Robotiq gripper.
 
 ---
 
-**Note**: Package naming is currently in transition. Several packages (`steve_navigation`, `steve_simulation`, `steve_hardware_bringup`) will be renamed to follow the `steve_*` naming convention in future updates.
+## Contributors & Acknowledgments
+
+This project is developed at the **Humanoid Robots Lab (HRL)**, University of Bonn.
+
+### Lead Developers
+- **Shrikar Nakhye** - [GitHub](https://github.com/Itsshriks) | [Email](mailto:nakhyeshrikar@icloud.com)
+- **Pratik Adhikari** - [GitHub](https://github.com/pratik-adhikari) | [Email](mailto:pratikadhikari.de@gmail.com)
+- **Riddhesh More** - [GitHub](https://github.com/RiddheshMore) | [Email](mailto:riddheshmore311@gmail.com)
+
+### Acknowledgements
+- **Rohit Menon** - For mentorship and technical guidance on Neobotix platforms.
+- **Prof. Maren Bennewitz** - Head of the Humanoid Robots Lab, University of Bonn.
+
+---
+
+## Robot Communication (Physical Robot)
+
+When connecting to the physical robot (Ubuntu 20/22):
+
+- **Static IP**: `10.7.4.213`
+- **Ethernet Port**: `192.168.60.90` (DHCP)
+
+Configure your network settings to match the robot's subnet for proper communication.
+
+---
+
+## Docker Support
+
+This workspace includes a `.devcontainer` configuration for VSCode, allowing you to develop in a consistent, containerized environment.
+1. Open the workspace in VSCode.
+2. When prompted, select **"Reopen in Container"**.
