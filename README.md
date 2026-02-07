@@ -41,12 +41,12 @@ Perception pipeline for object detection, scene understanding, and visual proces
 **See detailed documentation**: [steve_perception/README.md](src/steve_perception/README.md)
 
 ### steve_navigation
-Navigation stack for autonomous path planning and obstacle avoidance. Currently implemented as `steve_navigation` (will be renamed in future updates).
+Navigation stack for autonomous path planning and obstacle avoidance. 
 
 **See detailed documentation**: [steve_navigation/README.md](src/steve_navigation/README.md)
 
 ### steve_simulation
-Gazebo-based simulation environment for testing navigation, manipulation, and perception. Currently implemented as `steve_simulation` (will be renamed in future updates).
+Gazebo-based simulation environment for testing navigation, manipulation, and perception.
 
 **See detailed documentation**: [steve_simulation/README.md](src/steve_simulation/README.md)
 
@@ -55,13 +55,13 @@ Natural language command understanding and grounding to robot actions, enabling 
 
 **See detailed documentation**: [steve_command_grounding/README.md](src/steve_command_grounding/README.md)
 
-### steve_bringup
-Hardware initialization and driver management for the physical robot. Currently implemented as `steve_hardware_bringup` (will be renamed in future updates).
+### steve_hardware_bringup
+Hardware initialization and driver management for the physical robot.
 
 **See detailed documentation**: [steve_hardware_bringup/README.md](src/steve_hardware_bringup/README.md)
 
 ### steve_essentials
-Core utilities, configuration files, and shared resources used across all packages. *(Currently being organized - remaining packages will be consolidated here)*
+Core utilities, configuration files, and shared resources used across all packages.
 
 ### steve_manipulation
 Manipulation control for the UR5e arm and Robotiq gripper, including motion planning and grasp execution.
