@@ -25,3 +25,7 @@
 	path = src/steve_essentials
 	url = https://github.com/ItsShriks/steve_essentials.git
 	branch = dev
+[submodule "src/steve_command_grounding"]
+	path = src/steve_command_grounding
+	url = https://github.com/RiddheshMore/steve_command_grounding.git
+	branch = dev
