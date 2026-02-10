@@ -1,31 +1,32 @@
 [submodule "src/steve_perception"]
 	path = src/steve_perception
-	url = https://github.com/pratik-adhikari/steve_perception.git
+	url = git@github.com:pratik-adhikari/steve_perception.git
 	branch = dev
 
 [submodule "src/steve_pan_tilt_controller"]
 	path = src/steve_pan_tilt_controller
-	url = https://github.com/RiddheshMore/steve_pan_tilt_controller.git
+	url = git@github.com:RiddheshMore/steve_pan_tilt_controller.git
 	branch = dev
 
 [submodule "src/steve_hardware_bringup"]
 	path = src/steve_hardware_bringup
-	url = https://github.com/ItsShriks/steve_hardware_bringup.git
+	url = git@github.com:ItsShriks/steve_hardware_bringup.git
 	branch = dev
 
 [submodule "src/steve_simulation"]
 	path = src/steve_simulation
-	url = https://github.com/ItsShriks/steve_simulation.git
+	url = git@github.com:ItsShriks/steve_simulation.git
 	branch = dev
 [submodule "src/steve_navigation"]
 	path = src/steve_navigation
-	url = https://github.com/ItsShriks/steve_navigation.git
+	url = git@github.com:ItsShriks/steve_navigation.git
 	branch = dev
 [submodule "src/steve_essentials"]
 	path = src/steve_essentials
-	url = https://github.com/ItsShriks/steve_essentials.git
+	url = git@github.com:ItsShriks/steve_essentials.git
 	branch = dev
+
 [submodule "src/steve_command_grounding"]
 	path = src/steve_command_grounding
-	url = https://github.com/RiddheshMore/steve_command_grounding.git
+	url = git@github.com:RiddheshMore/steve_command_grounding.git
 	branch = dev
