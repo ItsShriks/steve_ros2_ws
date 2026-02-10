@@ -60,6 +60,11 @@ This command will:
 2. Launch RViz for visualization.
 3. Start the Nav2 stack with AMCL localization.
 
+**To launch simulation only (with map and robot description):**
+```bash
+ros2 launch steve_simulation simulation.launch.py
+```
+
 **To create a map using SLAM:**
 ```bash
 ros2 launch steve_navigation slam.launch.py use_sim_time:=true
@@ -133,6 +138,22 @@ Configure your network settings to match the robot's subnet for proper communica
 
 ## Docker Support
 
+Use the provided scripts to build and run the Docker container:
+
+### Build
+```bash
+./scripts/build_docker.sh
+```
+
+### Run
+```bash
+./scripts/run_docker.sh
+```
+
+
+
 This workspace includes a `.devcontainer` configuration for VSCode, allowing you to develop in a consistent, containerized environment.
 1. Open the workspace in VSCode.
 2. When prompted, select **"Reopen in Container"**.
+
+---

@@ -91,3 +91,4 @@ gz-transport/
 *.swo
 frames_*.gv
 frames_*.pdf
+docs/
