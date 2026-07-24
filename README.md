@@ -21,7 +21,7 @@ This workspace provides a complete software stack for the **Steve Butler** robot
 Clone the workspace ensuring all submodules (including `steve_essentials` dependencies) are initialized:
 
 ```bash
-git clone --recurse-submodules git@gitlab.igg.uni-bonn.de:hrl_students/ws2526_butler/steve_ros2_ws.git -b dev
+git clone --recurse-submodules git@github.com:ItsShriks/steve_ros2_ws.git -b dev
 cd steve_ros2_ws
 ```
 
