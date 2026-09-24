@@ -13,7 +13,8 @@ MoveIt 2. Only the arm and gripper are commanded; the base is not planned (plann
 | `config/kinematics.yaml`, `joint_limits.yaml`, `ompl_planning.yaml` | MoveIt planning |
 | `config/moveit_controllers_{sim,real}.yaml` | MoveIt → `joint_trajectory_controller` (Gazebo) / `scaled_joint_trajectory_controller` (UR driver) + `gripper_controller` |
 | `config/gripper_controllers.yaml`, `urdf/gripper_only.urdf.xacro` | real robot: stand-alone gripper controller manager |
-| `steve_manipulation/manipulator.py` | Python API + `manipulator` CLI |
+| `steve_manipulation/__init__.py`, `steve_manipulation/manipulator.py` | Python package with the `SteveManipulator` API and `manipulator` CLI |
+| `../steve_wbc/` | Unified base + arm whole-body controller; see [`steve_wbc/README.md`](../steve_wbc/README.md) |
 | `tools/generate_srdf.py` | regenerates the SRDF from the robot URDF |
 
 The robot description is `steve_simulation/robots/mmo_700/mmo_700.urdf.xacro` with
