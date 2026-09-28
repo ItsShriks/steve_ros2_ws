@@ -128,7 +128,6 @@ def launch_setup(context: LaunchContext):
                 "arm_type": ARM_TYPE,
                 "robot_ip": cfg("robot_ip"),
                 "enable_camera": cfg("enable_camera"),
-                "enable_pan_tilt": "true",
                 "arm_tool": "robotiq_2f_85",
             }.items(),
         ))
