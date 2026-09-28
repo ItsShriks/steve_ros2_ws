@@ -1,0 +1,1 @@
+/home/neobotix/steve_ros2_ws/build/neo_msgs2/rosidl_typesupport_introspection_c/neo_msgs2/msg/detail/lcd_output__rosidl_typesupport_introspection_c.h

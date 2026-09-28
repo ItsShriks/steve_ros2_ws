@@ -1,0 +1,11 @@
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:[m[K In member function ‘[01m[Kint SerialIO::openIO()[m[K’:
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:231:39:[m[K [01;35m[Kwarning: [m[Kthis statement may fall through [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wimplicit-fallthrough=-Wimplicit-fallthrough=]8;;[m[K]
+  231 |                         m_tio.c_cflag [01;35m[K|[m[K= PARODD;
+      |                                       [01;35m[K^[m[K
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:234:17:[m[K [01;36m[Knote: [m[Khere
+  234 |                 [01;36m[Kcase[m[K PA_EVEN:
+      |                 [01;36m[K^~~~[m[K
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/RelayBoardClient.cpp:[m[K In member function ‘[01m[Kvoid RelayBoardClient::writeLCD(const string&)[m[K’:
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/RelayBoardClient.cpp:763:23:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+  763 |                 if ([01;35m[Ki < sText.size()[m[K)
+      |                     [01;35m[K~~^~~~~~~~~~~~~~[m[K

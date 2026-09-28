@@ -1,0 +1,1 @@
+/home/neobotix/steve_ros2_ws/build/wiimote_msgs/ament_cmake_core/wiimote_msgsConfig-version.cmake

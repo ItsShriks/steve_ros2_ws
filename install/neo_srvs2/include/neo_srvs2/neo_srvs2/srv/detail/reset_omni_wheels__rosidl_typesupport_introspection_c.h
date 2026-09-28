@@ -1,0 +1,1 @@
+/home/neobotix/steve_ros2_ws/build/neo_srvs2/rosidl_typesupport_introspection_c/neo_srvs2/srv/detail/reset_omni_wheels__rosidl_typesupport_introspection_c.h

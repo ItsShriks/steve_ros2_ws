@@ -1,0 +1,40 @@
+[0.722s] Invoking command in '/home/neobotix/steve_ros2_ws/build/steve_perception': PYTHONPATH=/home/neobotix/steve_ros2_ws/build/steve_perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/neobotix/steve_ros2_ws/install/steve_perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/neobotix/steve_ros2_ws/build/steve_perception/build --no-deps symlink_data
+[1.022s] running develop
+[1.023s] /usr/lib/python3/dist-packages/setuptools/command/easy_install.py:158: EasyInstallDeprecationWarning: easy_install command is deprecated. Use build and pip and other standards-based tools.
+[1.023s]   warnings.warn(
+[1.203s] running egg_info
+[1.204s] creating steve_perception.egg-info
+[1.204s] writing steve_perception.egg-info/PKG-INFO
+[1.205s] writing dependency_links to steve_perception.egg-info/dependency_links.txt
+[1.205s] writing entry points to steve_perception.egg-info/entry_points.txt
+[1.205s] writing requirements to steve_perception.egg-info/requires.txt
+[1.206s] writing top-level names to steve_perception.egg-info/top_level.txt
+[1.206s] writing manifest file 'steve_perception.egg-info/SOURCES.txt'
+[1.208s] reading manifest file 'steve_perception.egg-info/SOURCES.txt'
+[1.210s] writing manifest file 'steve_perception.egg-info/SOURCES.txt'
+[1.212s] running build_ext
+[1.212s] Creating /home/neobotix/steve_ros2_ws/install/steve_perception/lib/python3.10/site-packages/steve-perception.egg-link (link to .)
+[1.214s] Installing extract_scene_data script to /home/neobotix/steve_ros2_ws/install/steve_perception/lib/steve_perception
+[1.214s] Installing generate_scene_graph script to /home/neobotix/steve_ros2_ws/install/steve_perception/lib/steve_perception
+[1.214s] Installing perception_node script to /home/neobotix/steve_ros2_ws/install/steve_perception/lib/steve_perception
+[1.214s] Installing sam3_detector script to /home/neobotix/steve_ros2_ws/install/steve_perception/lib/steve_perception
+[1.215s] 
+[1.215s] Installed /home/neobotix/steve_ros2_ws/build/steve_perception
+[1.215s] running symlink_data
+[1.215s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/ament_index
+[1.216s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/ament_index/resource_index
+[1.216s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/ament_index/resource_index/packages
+[1.216s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/resource/steve_perception -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/ament_index/resource_index/packages
+[1.216s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/package.xml -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception
+[1.216s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/launch
+[1.217s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/launch/perception.launch.py -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/launch
+[1.217s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/launch/mapping.launch.py -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/launch
+[1.217s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/launch/sam3_detector.launch.py -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/launch
+[1.217s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.218s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/config/mapping.yaml -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.218s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/config/steve.yaml -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.218s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/config/rtabmap_rgbd_autosave.ini -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.218s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/config/rtabmap_rgbd_commented_ref.ini -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.219s] symbolically linking /home/neobotix/steve_ros2_ws/build/steve_perception/config/rtabmap_rgbd.ini -> /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/config
+[1.219s] creating /home/neobotix/steve_ros2_ws/install/steve_perception/share/steve_perception/data
+[1.270s] Invoked command in '/home/neobotix/steve_ros2_ws/build/steve_perception' returned '0': PYTHONPATH=/home/neobotix/steve_ros2_ws/build/steve_perception/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/neobotix/steve_ros2_ws/install/steve_perception/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py develop --editable --build-directory /home/neobotix/steve_ros2_ws/build/steve_perception/build --no-deps symlink_data

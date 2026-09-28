@@ -1,0 +1,92 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Override CMake install command with custom implementation using symlinks instead of copying resources
+-- Found rclcpp: 16.0.10 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+-- Found FastRTPS: /opt/ros/humble/include  
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found rclcpp_action: 16.0.10 (/opt/ros/humble/share/rclcpp_action/cmake)
+-- Found rclcpp_lifecycle: 16.0.10 (/opt/ros/humble/share/rclcpp_lifecycle/cmake)
+-- Found sensor_msgs: 4.2.4 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found trajectory_msgs: 4.2.4 (/opt/ros/humble/share/trajectory_msgs/cmake)
+-- Found neo_srvs2: 0.1.0 (/home/neobotix/steve_ros2_ws/install/neo_srvs2/share/neo_srvs2/cmake)
+-- Found neo_msgs2: 0.1.0 (/home/neobotix/steve_ros2_ws/install/neo_msgs2/share/neo_msgs2/cmake)
+-- Found std_srvs: 4.2.4 (/opt/ros/humble/share/std_srvs/cmake)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/neobotix/steve_ros2_ws/build/neo_relayboard_v2-2
+[ 14%] [32mBuilding CXX object CMakeFiles/neo_relayboard_v2-2.dir/common/src/NeoRelayBoardNode.cpp.o[0m
+[ 28%] [32mBuilding CXX object CMakeFiles/neo_relayboard_v2-2.dir/common/src/StrUtil.cpp.o[0m
+[ 42%] [32mBuilding CXX object CMakeFiles/neo_relayboard_v2-2.dir/common/src/SerialIO.cpp.o[0m
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:[m[K In member function ‘[01m[Kint SerialIO::openIO()[m[K’:
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:231:39:[m[K [01;35m[Kwarning: [m[Kthis statement may fall through [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wimplicit-fallthrough=-Wimplicit-fallthrough=]8;;[m[K]
+  231 |                         m_tio.c_cflag [01;35m[K|[m[K= PARODD;
+      |                                       [01;35m[K^[m[K
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/SerialIO.cpp:234:17:[m[K [01;36m[Knote: [m[Khere
+  234 |                 [01;36m[Kcase[m[K PA_EVEN:
+      |                 [01;36m[K^~~~[m[K
+[ 57%] [32mBuilding CXX object CMakeFiles/neo_relayboard_v2-2.dir/common/src/RelayBoardClient.cpp.o[0m
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/RelayBoardClient.cpp:[m[K In member function ‘[01m[Kvoid RelayBoardClient::writeLCD(const string&)[m[K’:
+[01m[K/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_relayboard_v2-2/common/src/RelayBoardClient.cpp:763:23:[m[K [01;35m[Kwarning: [m[Kcomparison of integer expressions of different signedness: ‘[01m[Kint[m[K’ and ‘[01m[Kstd::__cxx11::basic_string<char>::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wsign-compare-Wsign-compare]8;;[m[K]
+  763 |                 if ([01;35m[Ki < sText.size()[m[K)
+      |                     [01;35m[K~~^~~~~~~~~~~~~~[m[K
+[ 71%] [32m[1mLinking CXX static library libneo_relayboard_v2-2.a[0m
+[ 71%] Built target neo_relayboard_v2-2
+[ 85%] [32mBuilding CXX object CMakeFiles/neo_relayboard_node.dir/src/neo_relayboard_v2_node.cpp.o[0m
+[100%] [32m[1mLinking CXX executable neo_relayboard_node[0m
+[100%] Built target neo_relayboard_node
+-- Install configuration: ""
+-- Execute custom install script
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/library_path.sh
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/library_path.dsv
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//DriveParam.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//Mutex.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//NeoRelayBoardNode.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//RelayBoardClient.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//SerialIO.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/common/include//StrUtil.h
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/lib/neo_relayboard_v2-2/neo_relayboard_node
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/launch/neo_relayboard_v2.launch.py
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/launch/neo_relayboard_v2.yaml
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/ament_index/resource_index/package_run_dependencies/neo_relayboard_v2-2
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/ament_index/resource_index/parent_prefix_path/neo_relayboard_v2-2
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/ament_prefix_path.sh
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/ament_prefix_path.dsv
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/path.sh
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/environment/path.dsv
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/local_setup.bash
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/local_setup.sh
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/local_setup.zsh
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/local_setup.dsv
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/package.dsv
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/ament_index/resource_index/packages/neo_relayboard_v2-2
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/cmake/ament_cmake_export_include_directories-extras.cmake
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/cmake/ament_cmake_export_libraries-extras.cmake
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/cmake/neo_relayboard_v2-2Config.cmake
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/cmake/neo_relayboard_v2-2Config-version.cmake
+-- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_relayboard_v2-2/share/neo_relayboard_v2-2/package.xml

@@ -1,0 +1,67 @@
+[0.011s] Invoking command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake /home/neobotix/steve_ros2_ws/src/steve_essentials/neo_teleop2 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/neobotix/steve_ros2_ws/install/neo_teleop2
+[0.151s] -- The C compiler identification is GNU 11.4.0
+[0.284s] -- The CXX compiler identification is GNU 11.4.0
+[0.303s] -- Detecting C compiler ABI info
+[0.535s] -- Detecting C compiler ABI info - done
+[0.560s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.561s] -- Detecting C compile features
+[0.565s] -- Detecting C compile features - done
+[0.574s] -- Detecting CXX compiler ABI info
+[0.880s] -- Detecting CXX compiler ABI info - done
+[0.897s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.899s] -- Detecting CXX compile features
+[0.902s] -- Detecting CXX compile features - done
+[0.912s] -- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.315s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.478s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[1.559s] -- Found rclcpp: 16.0.10 (/opt/ros/humble/share/rclcpp/cmake)
+[1.645s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.658s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.685s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.709s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.731s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.835s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.837s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.992s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[2.049s] -- Found FastRTPS: /opt/ros/humble/include  
+[2.147s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[2.174s] -- Looking for pthread.h
+[2.334s] -- Looking for pthread.h - found
+[2.334s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[2.493s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[2.494s] -- Found Threads: TRUE  
+[2.633s] -- Found rclcpp_action: 16.0.10 (/opt/ros/humble/share/rclcpp_action/cmake)
+[2.714s] -- Found rclcpp_lifecycle: 16.0.10 (/opt/ros/humble/share/rclcpp_lifecycle/cmake)
+[2.739s] -- Found sensor_msgs: 4.2.4 (/opt/ros/humble/share/sensor_msgs/cmake)
+[2.778s] -- Found trajectory_msgs: 4.2.4 (/opt/ros/humble/share/trajectory_msgs/cmake)
+[2.882s] -- Configuring done
+[2.894s] -- Generating done
+[2.896s] -- Build files have been written to: /home/neobotix/steve_ros2_ws/build/neo_teleop2
+[2.913s] Invoked command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake /home/neobotix/steve_ros2_ws/src/steve_essentials/neo_teleop2 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/neobotix/steve_ros2_ws/install/neo_teleop2
+[2.913s] Invoking command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake --build /home/neobotix/steve_ros2_ws/build/neo_teleop2 -- -j4 -l4
+[2.972s] [ 50%] [32mBuilding CXX object CMakeFiles/neo_teleop2_node.dir/src/neo_teleop.cpp.o[0m
+[12.827s] [100%] [32m[1mLinking CXX executable neo_teleop2_node[0m
+[13.442s] [100%] Built target neo_teleop2_node
+[13.455s] Invoked command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake --build /home/neobotix/steve_ros2_ws/build/neo_teleop2 -- -j4 -l4
+[13.490s] Invoking command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake --install /home/neobotix/steve_ros2_ws/build/neo_teleop2
+[13.500s] -- Install configuration: ""
+[13.501s] -- Execute custom install script
+[13.501s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/lib/neo_teleop2/neo_teleop2_node
+[13.512s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/launch/default.yaml
+[13.523s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/launch/teleop.launch.py
+[13.534s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/ament_index/resource_index/package_run_dependencies/neo_teleop2
+[13.546s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/ament_index/resource_index/parent_prefix_path/neo_teleop2
+[13.558s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/environment/ament_prefix_path.sh
+[13.569s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/environment/ament_prefix_path.dsv
+[13.579s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/environment/path.sh
+[13.590s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/environment/path.dsv
+[13.601s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/local_setup.bash
+[13.612s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/local_setup.sh
+[13.623s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/local_setup.zsh
+[13.634s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/local_setup.dsv
+[13.645s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/package.dsv
+[13.658s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/ament_index/resource_index/packages/neo_teleop2
+[13.667s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/cmake/neo_teleop2Config.cmake
+[13.678s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/cmake/neo_teleop2Config-version.cmake
+[13.689s] -- Symlinking: /home/neobotix/steve_ros2_ws/install/neo_teleop2/share/neo_teleop2/package.xml
+[13.702s] Invoked command in '/home/neobotix/steve_ros2_ws/build/neo_teleop2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/neobotix/steve_ros2_ws/install/steve_wbc:/home/neobotix/steve_ros2_ws/install/steve_manipulation:/home/neobotix/steve_ros2_ws/install/steve_perception:/opt/ros/humble /usr/bin/cmake --install /home/neobotix/steve_ros2_ws/build/neo_teleop2
