@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/src/steve_hardware_bringup/launch/lidar.launch.py

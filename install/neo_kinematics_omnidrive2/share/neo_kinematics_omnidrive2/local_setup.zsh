@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_kinematics_omnidrive2/ament_cmake_environment_hooks/local_setup.zsh

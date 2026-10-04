@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/src/steve_essentials/neo_msgs2/msg/LCDOutput.msg

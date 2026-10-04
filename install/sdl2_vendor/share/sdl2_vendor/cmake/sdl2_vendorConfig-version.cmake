@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/sdl2_vendor/ament_cmake_core/sdl2_vendorConfig-version.cmake

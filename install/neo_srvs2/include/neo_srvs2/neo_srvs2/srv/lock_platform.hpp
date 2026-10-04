@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_srvs2/rosidl_generator_cpp/neo_srvs2/srv/lock_platform.hpp

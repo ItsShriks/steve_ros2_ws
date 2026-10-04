@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_srvs2/rosidl_typesupport_fastrtps_c/neo_srvs2/srv/detail/relay_board_set_relay__rosidl_typesupport_fastrtps_c.h

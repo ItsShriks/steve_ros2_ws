@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_teleop2/ament_cmake_core/neo_teleop2Config-version.cmake

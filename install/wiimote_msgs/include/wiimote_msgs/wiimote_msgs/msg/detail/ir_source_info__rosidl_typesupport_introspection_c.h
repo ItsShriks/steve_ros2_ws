@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/wiimote_msgs/rosidl_typesupport_introspection_c/wiimote_msgs/msg/detail/ir_source_info__rosidl_typesupport_introspection_c.h

@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/src/steve_essentials/joystick_drivers/wiimote_msgs/msg/IrSourceInfo.msg

@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_msgs2/rosidl_typesupport_fastrtps_c/neo_msgs2/msg/detail/io_board__rosidl_typesupport_fastrtps_c.h

@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/src/steve_simulation/robots/run_mmo_700_scene.py

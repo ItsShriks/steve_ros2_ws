@@ -1,1 +1,0 @@
-/home/neobotix/steve_ros2_ws/build/neo_common2/ament_cmake_environment_hooks/local_setup.bash
