@@ -9,7 +9,29 @@ never start a second UR driver / controller_manager.
 
 import time
 
-PROBE_TIME = 3.0  # s  ROS graph discovery before deciding whether a bringup is already running
+PROBE_TIME = 8.0  # s  ROS graph discovery before deciding whether a bringup is already running
+# processes of a bringup on THIS computer: found without ROS discovery, which can be slow on a busy
+# network (a 3 s graph probe once missed the running bringup and a second UR driver was started)
+LOCAL_PROCESSES = {"ur_ros2_control_node": "/controller_manager",
+                   "robot_state_publisher": "/steve_robot_state_publisher"}
+
+
+def local_bringup_processes():
+    """ROS node names whose driver process runs on this computer (from /proc, no ROS needed)."""
+    import os
+    found = set()
+    for pid in os.listdir("/proc"):
+        if not pid.isdigit():
+            continue
+        try:
+            with open(f"/proc/{pid}/cmdline", "rb") as f:
+                cmd = f.read().split(b"\0")
+        except OSError:
+            continue
+        exe = os.path.basename(cmd[0].decode(errors="ignore")) if cmd and cmd[0] else ""
+        if exe in LOCAL_PROCESSES:
+            found.add(LOCAL_PROCESSES[exe])
+    return found
 WATCHED = ("/controller_manager", "/steve_robot_state_publisher", "/gripper_controller_manager")
 
 
@@ -19,6 +41,9 @@ def probe_running_bringup(timeout=PROBE_TIME):
     import rclpy
     from rcl_interfaces.srv import GetParameters
     from rclpy.executors import SingleThreadedExecutor
+    local = local_bringup_processes()
+    if "/controller_manager" in local:
+        timeout = min(timeout, 2.0)  # the driver runs here: the graph probe only checks the gripper
     ctx = rclpy.Context()
     rclpy.init(context=ctx)
     node = rclpy.create_node("steve_manipulation_bringup_probe", context=ctx)
@@ -44,7 +69,7 @@ def probe_running_bringup(timeout=PROBE_TIME):
     finally:
         node.destroy_node()
         rclpy.shutdown(context=ctx)
-    return found, gripper_in_description
+    return found | local, gripper_in_description
 
 
 def bringup_running(timeout=PROBE_TIME):

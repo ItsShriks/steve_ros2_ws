@@ -17,6 +17,8 @@ CLI  (ros2 run steve_manipulation manipulator ...):
     list
     named ready
     joints 0 -1.57 1.57 -1.57 -1.57 0
+    --direct named table_reach              (no MoveIt: straight to the trajectory controller,
+    --direct --duration 20 joints ...        no collision checking)
     pose 0.6 0.0 1.0 --rpy 3.14159 0 0 [--frame base_link]
     gripper open | close | 0.4
     ... [--vel 0.2] [--acc 0.2] [--plan_only]
@@ -41,7 +43,9 @@ import rclpy
 from rclpy.action import ActionClient
 from rclpy.node import Node
 
-from control_msgs.action import GripperCommand
+from control_msgs.action import FollowJointTrajectory, GripperCommand
+from sensor_msgs.msg import JointState
+from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import Pose, PoseStamped
 from moveit_msgs.action import MoveGroup
 from moveit_msgs.msg import (BoundingVolume, Constraints, JointConstraint, MoveItErrorCodes,
@@ -194,6 +198,55 @@ class SteveManipulator(Node):
                 return self._execute(group, self._joint_constraints(self.named[group][name]), plan_only)
         raise KeyError(f"unknown named state '{name}' — known: {self.named}")
 
+    # ── direct (no MoveIt) ───────────────────────────────────────────────────
+    def move_direct(self, positions, duration=None, max_vel=1.0,
+                    action="/scaled_joint_trajectory_controller/follow_joint_trajectory"):
+        """Joint goal straight to the arm's trajectory controller — no MoveIt, so NO collision
+        checking: a joint-space straight line. positions: dict {joint: rad} or 6 values (UR order).
+        duration: seconds; default from the largest joint change at velocity_scaling * max_vel."""
+        if not isinstance(positions, dict):
+            names = list(next(iter(self.named[ARM_GROUP].values())).keys())
+            if len(positions) != len(names):
+                raise ValueError(f"expected {len(names)} joint values")
+            positions = dict(zip(names, positions))
+        self._check_safe_to_move()
+        cur = {}
+        sub = self.create_subscription(JointState, "/joint_states",
+                                       lambda m: cur.update(zip(m.name, m.position)), 10)
+        self._spin_for(lambda: all(j in cur for j in positions), 3.0)
+        self.destroy_subscription(sub)
+        if not all(j in cur for j in positions):
+            raise RuntimeError("no /joint_states for the arm joints")
+        dq = max(abs(positions[j] - cur[j]) for j in positions)
+        T = float(duration) if duration else max(3.0, dq / max(1e-3, self.velocity_scaling * max_vel))
+        client = ActionClient(self, FollowJointTrajectory, action)
+        if not client.wait_for_server(timeout_sec=5.0):
+            raise RuntimeError(f"{action} not available (trajectory controller active?)")
+        goal = FollowJointTrajectory.Goal()
+        goal.trajectory.joint_names = list(positions)
+        pt = JointTrajectoryPoint(positions=[float(positions[j]) for j in positions])
+        pt.time_from_start.sec, pt.time_from_start.nanosec = int(T), int((T % 1) * 1e9)
+        goal.trajectory.points = [pt]
+        self.get_logger().info(f"direct move: largest joint change {dq:.2f} rad in {T:.1f} s (no collision check)")
+        handle = self._wait(client.send_goal_async(goal), 5.0)
+        if not handle.accepted:
+            raise RuntimeError("trajectory goal rejected (controller inactive / program not playing?)")
+        res = handle.get_result_async()
+        t_end = time.monotonic() + T + 10.0
+        while not res.done():
+            rclpy.spin_once(self, timeout_sec=0.05)
+            red, why = self.safety_status()
+            if red:
+                handle.cancel_goal_async()
+                raise RuntimeError(f"safety stop ({why}) — motion cancelled")
+            if time.monotonic() > t_end:
+                handle.cancel_goal_async()
+                raise TimeoutError("direct move did not finish in time")
+        code = res.result().result.error_code
+        if code != 0:
+            raise RuntimeError(f"trajectory controller error {code}: {res.result().result.error_string}")
+        return True
+
     def move_to_joints(self, positions, plan_only=False):
         """positions: dict {joint: rad} or 6 values in UR order (pan, lift, elbow, w1, w2, w3)."""
         if not isinstance(positions, dict):
@@ -256,6 +309,11 @@ def main(argv=None):
     p.add_argument("--vel", type=float, default=0.2, help="velocity scaling 0..1")
     p.add_argument("--acc", type=float, default=0.2, help="acceleration scaling 0..1")
     p.add_argument("--plan_only", action="store_true", help="plan but do not execute")
+    p.add_argument("--direct", action="store_true",
+                   help="named / joints: send the goal straight to the trajectory controller, without "
+                        "MoveIt (no collision checking — joint-space straight line)")
+    p.add_argument("--duration", type=float, default=None,
+                   help="--direct: motion time [s] (default: from the largest joint change and --vel)")
     p.add_argument("--safety", choices=["auto", "em_stop", "lidar", "off"], default="auto",
                    help="safety stop source: the robot's EM-stop system (auto if running; em_stop = "
                         "required, real robot) or the LiDAR fallback (Gazebo)")
@@ -283,6 +341,12 @@ def main(argv=None):
             for group, states in m.named.items():
                 print(f"{group}: {', '.join(sorted(states))}")
             ok = True
+        elif args.cmd == "named" and args.direct:
+            if args.name not in m.named.get(ARM_GROUP, {}):
+                raise KeyError(f"unknown arm state '{args.name}' — known: {sorted(m.named.get(ARM_GROUP, {}))}")
+            ok = m.move_direct(m.named[ARM_GROUP][args.name], args.duration)
+        elif args.cmd == "joints" and args.direct:
+            ok = m.move_direct(args.q, args.duration)
         elif args.cmd == "named":
             ok = m.move_to_named(args.name, args.plan_only)
         elif args.cmd == "joints":

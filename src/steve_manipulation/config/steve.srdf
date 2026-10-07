@@ -9,8 +9,10 @@
         <joint name="robotiq_85_left_knuckle_joint"/>
     </group>
 
+    <!-- Arm poses face the NEOBOTIX side (base +x, away from the pan-tilt tower): the UR5e is
+         mounted with yaw +90 deg, so "forward" is shoulder_pan = -pi/2 (checked 2026-09-29) -->
     <group_state name="home" group="ur_manipulator">
-        <joint name="ur5eshoulder_pan_joint" value="0.0"/>
+        <joint name="ur5eshoulder_pan_joint" value="-1.5708"/>
         <joint name="ur5eshoulder_lift_joint" value="-1.5708"/>
         <joint name="ur5eelbow_joint" value="1.5708"/>
         <joint name="ur5ewrist_1_joint" value="-1.5708"/>
@@ -18,7 +20,7 @@
         <joint name="ur5ewrist_3_joint" value="0.0"/>
     </group_state>
     <group_state name="ready" group="ur_manipulator">
-        <joint name="ur5eshoulder_pan_joint" value="0.0"/>
+        <joint name="ur5eshoulder_pan_joint" value="-1.5708"/>
         <joint name="ur5eshoulder_lift_joint" value="-1.2"/>
         <joint name="ur5eelbow_joint" value="1.2"/>
         <joint name="ur5ewrist_1_joint" value="-1.6"/>
@@ -26,7 +28,7 @@
         <joint name="ur5ewrist_3_joint" value="0.0"/>
     </group_state>
     <group_state name="table_reach" group="ur_manipulator">
-        <joint name="ur5eshoulder_pan_joint" value="0.0"/>
+        <joint name="ur5eshoulder_pan_joint" value="-1.5708"/>
         <joint name="ur5eshoulder_lift_joint" value="-1.0"/>
         <joint name="ur5eelbow_joint" value="1.5"/>
         <joint name="ur5ewrist_1_joint" value="-2.05"/>
@@ -34,7 +36,7 @@
         <joint name="ur5ewrist_3_joint" value="0.0"/>
     </group_state>
     <group_state name="forward" group="ur_manipulator">
-        <joint name="ur5eshoulder_pan_joint" value="0.0"/>
+        <joint name="ur5eshoulder_pan_joint" value="-1.5708"/>
         <joint name="ur5eshoulder_lift_joint" value="-1.558"/>
         <joint name="ur5eelbow_joint" value="2.075"/>
         <joint name="ur5ewrist_1_joint" value="-0.516"/>
