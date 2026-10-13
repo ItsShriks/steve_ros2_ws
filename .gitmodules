@@ -1,7 +1,7 @@
 [submodule "src/steve_perception"]
 	path = src/steve_perception
 	url = git@github.com:pratik-adhikari/steve_perception.git
-	branch = dev
+	branch = test
 
 [submodule "src/steve_pan_tilt_controller"]
 	path = src/steve_pan_tilt_controller
