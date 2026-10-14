@@ -104,7 +104,8 @@ python3 tools/save_named_pose.py parked             # add / replace 'parked' in 
 ```
 
 `parked` (2026-10-14): shoulder_pan 0°, lift −90°, elbow 150°, wrist_1 −65°, wrist_2 0°, wrist_3 9°
-— the arm folded. With `--symlink-install` no rebuild is needed; the robot PC needs the changed
+— the arm folded. `table_reach` puts the flange only ~0.20 m above a 0.83 m table: with a tool or the
+gripper camera mounted use `ready` (flange ~0.40 m above it) instead. With `--symlink-install` no rebuild is needed; the robot PC needs the changed
 SRDF in its own workspace. `--direct` sends the state straight to the trajectory controller
 without MoveIt's collision check.
 
