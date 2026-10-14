@@ -18,6 +18,7 @@ MoveIt 2. Only the arm and gripper are commanded; the base is not planned (plann
 | `steve_manipulation/bringup_probe.py` | detects an already running robot bringup (`ROS_AUTOSTART.sh`) so launch files never start a second UR driver |
 | `../steve_wbc/` | Unified base + arm whole-body controller; see [`steve_wbc/README.md`](../steve_wbc/README.md) |
 | `tools/generate_srdf.py` | regenerates the SRDF from the robot URDF |
+| `tools/save_named_pose.py` | saves the arm's **live** joint positions (`/joint_states`) as a named state in `config/steve.srdf` |
 
 The robot description is `steve_simulation/robots/mmo_700/mmo_700.urdf.xacro` with
 `arm_tool:=robotiq_2f_85` (gripper xacro: `steve_simulation/components/gripper/robotiq_2f_85.urdf.xacro`,
@@ -72,7 +73,7 @@ Gazebo and on the robot. Knuckle angle: `0.0` open … `0.7929` closed.
 
 ```bash
 ros2 run steve_manipulation manipulator list
-ros2 run steve_manipulation manipulator named ready          # home, ready, table_reach, forward
+ros2 run steve_manipulation manipulator named ready          # home, ready, table_reach, forward, parked
 ros2 run steve_manipulation manipulator joints 0 -1.2 1.2 -1.6 -1.57 0
 ros2 run steve_manipulation manipulator pose 0.7 0.0 1.0 --rpy 3.14159 0 0   # gripper_tcp in base_link
 ros2 run steve_manipulation manipulator gripper close        # open | close | 0.0..0.7929
@@ -92,6 +93,20 @@ arm.destroy_node(); rclpy.shutdown()
 ```
 
 Or use the MotionPlanning panel in RViz (planning group `ur_manipulator` / `gripper`).
+
+**New named states from the real arm**: move the arm there (pendant freedrive or `manipulator`),
+then save its live joint positions (UR driver running; on a remote PC with the robot's
+`ROS_DOMAIN_ID` / DDS profile):
+
+```bash
+python3 tools/save_named_pose.py parked --dry_run   # read and show only
+python3 tools/save_named_pose.py parked             # add / replace 'parked' in config/steve.srdf
+```
+
+`parked` (2026-10-14): shoulder_pan 0°, lift −90°, elbow 150°, wrist_1 −65°, wrist_2 0°, wrist_3 9°
+— the arm folded. With `--symlink-install` no rebuild is needed; the robot PC needs the changed
+SRDF in its own workspace. `--direct` sends the state straight to the trajectory controller
+without MoveIt's collision check.
 
 **Safety stop**: no arm or gripper motion is started while the robot's EM-stop system reports a
 stop (EM stop, S300 protective field red), and a running arm motion is **cancelled** as soon as

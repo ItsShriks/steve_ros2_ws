@@ -29,6 +29,7 @@ NAMED_ARM = {  # shoulder_pan, shoulder_lift, elbow, wrist_1, wrist_2, wrist_3
     "ready":       [0.0, -1.2, 1.2, -1.6, -1.57, 0.0],              # raised, gripper down
     "table_reach": [0.0, -1.0, 1.5, -2.05, -1.57, 0.0],             # reach forward, gripper down
     "forward":     [0.0, -1.558, 2.075, -0.516, 1.571, 0.0],        # gripper pointing forward
+    "parked":      [-0.0001, -1.5708, 2.6180, -1.1344, 0.0001, 0.1571],  # folded (tools/save_named_pose.py, 2026-10-14)
 }
 NAMED_GRIPPER = {"open": 0.0, "closed": 0.7929}
 
