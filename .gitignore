@@ -92,3 +92,6 @@ gz-transport/
 frames_*.gv
 frames_*.pdf
 docs/
+
+# Perception model code + weights (Contact-GraspNet, GroundingDINO, SAM): large, not tracked
+perception_tests/
