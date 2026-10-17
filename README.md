@@ -17,13 +17,16 @@ This workspace provides a complete software stack for the **Steve Butler** robot
 
 ## Installation
 
-### 1. Clone the Repository
-Clone the workspace ensuring all submodules (including `steve_essentials` dependencies) are initialized:
+### 1. Clone the Workspace and Packages
+Clone the workspace, then fetch all package repositories into `src/`:
 
 ```bash
-git clone --recurse-submodules git@gitlab.igg.uni-bonn.de:hrl_students/ws2526_butler/steve_ros2_ws.git -b dev
+git clone git@gitlab.igg.uni-bonn.de:hrl_students/ws2526_butler/steve_ros2_ws.git -b dev
 cd steve_ros2_ws
+./scripts/repos.sh
 ```
+
+The packages are **not** submodules. Each folder in `src/` (except `steve_manipulation` and `steve_wbc`, which live in this repo) is a normal git clone on the branch listed in [`steve.repos`](steve.repos). See [Working with Package Repositories](#working-with-package-repositories).
 
 ### 2. Install Dependencies
 Install required ROS 2 packages:
@@ -44,6 +47,32 @@ source /opt/ros/humble/setup.bash
 colcon build --symlink-install
 source install/setup.bash
 ```
+
+---
+
+## Working with Package Repositories
+
+[`steve.repos`](steve.repos) lists every package repository and the **branch** it tracks. The main repo stores only this list, not commit pointers. You can commit and push inside any package without touching the main repo.
+
+| Command | What it does |
+|---|---|
+| `./scripts/repos.sh` | Clone missing packages, switch each to its branch, fast-forward to the latest commit |
+| `./scripts/repos.sh status` | Show branch, ahead/behind and local changes for each package |
+| `./scripts/repos.sh push` | Push every package that has unpushed commits |
+
+Typical workflow:
+
+```bash
+./scripts/repos.sh                      # get the latest of everything
+cd src/steve_navigation
+git add -A && git commit -m "..."       # edit and commit as usual
+git push                                # or ./scripts/repos.sh push from the root
+```
+
+- **Switch a package to another branch:** change its `version:` in `steve.repos`, run `./scripts/repos.sh`, and commit `steve.repos`. This is the only change that needs a main-repo commit.
+- **Add a package:** add an entry to `steve.repos` and run `./scripts/repos.sh`.
+- `sync` never overwrites your work. It refuses to switch branches when there are uncommitted changes and stops if a branch has diverged from origin.
+- `steve.repos` also works with [vcstool](https://github.com/dirk-thomas/vcstool): `vcs import src < steve.repos` and `vcs pull src`.
 
 ---
 

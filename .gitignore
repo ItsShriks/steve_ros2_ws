@@ -95,3 +95,11 @@ docs/
 
 # Perception model code + weights (Contact-GraspNet, GroundingDINO, SAM): large, not tracked
 perception_tests/
+
+# ------------------------------
+# Package repos (managed by steve.repos / scripts/repos.sh)
+# ------------------------------
+# Each package in src/ is its own clone; only these are tracked in this repo.
+src/*
+!src/steve_manipulation/
+!src/steve_wbc/

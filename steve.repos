@@ -1,0 +1,32 @@
+# Package repositories cloned into src/ (vcstool-compatible).
+# `version` is the branch each package tracks. Change it here to switch branches.
+# Sync with:  ./scripts/repos.sh   (or: vcs import src < steve.repos && vcs pull src)
+repositories:
+  steve_perception:
+    type: git
+    url: git@github.com:pratik-adhikari/steve_perception.git
+    version: test
+  steve_pan_tilt_controller:
+    type: git
+    url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
+    version: test
+  steve_hardware_bringup:
+    type: git
+    url: git@github.com:ItsShriks/steve_hardware_bringup.git
+    version: test
+  steve_simulation:
+    type: git
+    url: git@github.com:ItsShriks/steve_simulation.git
+    version: test
+  steve_navigation:
+    type: git
+    url: git@github.com:ItsShriks/steve_navigation.git
+    version: test
+  steve_essentials:
+    type: git
+    url: git@github.com:ItsShriks/steve_essentials.git
+    version: test
+  steve_command_grounding:
+    type: git
+    url: git@github.com:RiddheshMore/steve_command_grounding.git
+    version: dev

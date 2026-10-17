@@ -1,6 +1,6 @@
 #!/bin/bash
 # Clean any stale build artifacts to prevent CMake cache errors
-git submodule update --init --recursive
+./scripts/repos.sh
 rm -rf /home/ws/build /home/ws/install /home/ws/log
 
 #mkdir -p src
