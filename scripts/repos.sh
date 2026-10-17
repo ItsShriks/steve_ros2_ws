@@ -58,7 +58,10 @@ sync_repo() {
       err "on '${current:-detached HEAD}' with uncommitted changes, not switching to '$branch'"
       return 1
     fi
-    git -C "$dir" checkout --quiet "$branch"
+    if ! git -C "$dir" switch --quiet "$branch"; then
+      err "could not switch to '$branch'"
+      return 1
+    fi
     warn "switched from '${current:-detached HEAD}' to '$branch'"
   fi
 
