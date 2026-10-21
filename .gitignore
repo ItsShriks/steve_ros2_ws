@@ -103,6 +103,7 @@ perception_tests/
 src/*
 !src/steve_manipulation/
 !src/steve_wbc/
+!src/steve_grasping/
 # pixi environments
 .pixi/*
 !.pixi/config.toml
