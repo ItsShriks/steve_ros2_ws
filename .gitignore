@@ -103,3 +103,11 @@ perception_tests/
 src/*
 !src/steve_manipulation/
 !src/steve_wbc/
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Mac (pixi) colcon builds
+build_mac/
+install_mac/
+log_mac/

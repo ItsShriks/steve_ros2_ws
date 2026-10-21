@@ -1,0 +1,31 @@
+[workspace]
+authors = ["ItsShriks <nakhyeshrikar@icloud.com>"]
+channels = ["https://prefix.dev/robostack-humble", "robostack-staging"]
+name = "steve_ros2_ws"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+gripper-camera = "bash scripts/mac_gripper_camera.sh"
+gripper-rviz = "DYLD_LIBRARY_PATH=$STEVE_MAC_LIBS ros2 launch scripts/mac_gripper_rviz.launch.py"
+wbc-dry = "DYLD_LIBRARY_PATH=$STEVE_MAC_LIBS ros2 launch steve_wbc steve_figure8_wbc.launch.py use_sim_time:=false launch_bringup:=false dry_run:=true"
+wbc-figure8 = "DYLD_LIBRARY_PATH=$STEVE_MAC_LIBS ros2 launch steve_wbc steve_figure8_wbc.launch.py use_sim_time:=false launch_bringup:=false amplitude:=0.05 frequency:=0.2 loops:=1 'extra_args:=--max_base_v 0.05 --max_base_w 0.1 --max_arm_vel 0.3 --lock_yaw'"
+build-mac = "colcon --log-base log_mac build --base-paths src/steve_essentials/neo_msgs2 src/steve_manipulation src/steve_simulation src/steve_wbc --build-base build_mac --install-base install_mac --cmake-args -DBUILD_TESTING=OFF '-DCMAKE_INSTALL_RPATH=@loader_path;@loader_path/../../..'"
+robot-rviz = "rviz2 -d scripts/mac_gripper_camera.rviz"
+
+[dependencies]
+ros-humble-desktop = ">=0.10.0,<0.11"
+ros-dev-tools = ">=1.0.3,<2"
+ros-humble-ros-base = ">=0.10.0,<0.11"
+ros-humble-rviz2 = ">=11.2.26,<12"
+ros-humble-rmw-fastrtps-cpp = ">=6.2.10,<7"
+ros-humble-realsense2-camera = ">=4.57.7,<5"
+ros-humble-rqt-image-view = ">=1.2.0,<2"
+ros-humble-ur-description = ">=2.10.0,<3"
+ros-humble-depth-image-proc = ">=3.0.9,<4"
+ros-humble-controller-manager-msgs = ">=2.54.0,<3"
+scipy = ">=1.18.1,<2"
+mujoco = ">=3.16.0,<4"
+
+[activation]
+scripts = ["scripts/mac_dds_env.sh", "scripts/mac_overlay.sh"]
