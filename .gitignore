@@ -112,3 +112,4 @@ src/*
 build_mac/
 install_mac/
 log_mac/
+src/steve_wbc/config/tables/
