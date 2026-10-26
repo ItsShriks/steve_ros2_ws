@@ -43,6 +43,15 @@
         <joint name="ur5ewrist_2_joint" value="1.571"/>
         <joint name="ur5ewrist_3_joint" value="0.0"/>
     </group_state>
+    <group_state name="explore" group="ur_manipulator">
+        <!-- home with wrist 1 tilted 25 deg forward: the D415 on the flange looks forward-down at the table -->
+        <joint name="ur5eshoulder_pan_joint" value="-1.5708"/>
+        <joint name="ur5eshoulder_lift_joint" value="-1.5708"/>
+        <joint name="ur5eelbow_joint" value="1.5708"/>
+        <joint name="ur5ewrist_1_joint" value="-2.0071"/>
+        <joint name="ur5ewrist_2_joint" value="-1.5708"/>
+        <joint name="ur5ewrist_3_joint" value="0.0"/>
+    </group_state>
     <group_state name="parked" group="ur_manipulator">
         <joint name="ur5eshoulder_pan_joint" value="-0.0001"/>
         <joint name="ur5eshoulder_lift_joint" value="-1.5708"/>
