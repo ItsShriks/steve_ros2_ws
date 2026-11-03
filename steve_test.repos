@@ -1,6 +1,6 @@
 # Package repositories cloned into src/ (vcstool-compatible).
 # `version` is the branch each package tracks. Change it here to switch branches.
-# Sync with:  ./scripts/repos.sh   (or: vcs import src < steve.repos && vcs pull src)
+# Sync with:  ./scripts/repos.sh sync test   (or: git go-test)
 repositories:
   steve_perception:
     type: git
