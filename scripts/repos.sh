@@ -5,8 +5,8 @@
 #   sync     (default) clone missing repos, check out their branch, pull latest
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
-#   switch <branch>   put every repo on <branch> (e.g. dev or test) and pull it; repos without
-#                     that branch stay where they are. Shortcuts: git go-dev / git go-test
+#   switch <branch>   move the workspace to <branch> (e.g. dev or test), then sync every package
+#                     to the branch that <branch>'s steve.repos lists. Shortcuts: git go-dev / git go-test
 #
 # Only plain git is needed. steve.repos is also vcstool-compatible.
 
@@ -114,35 +114,18 @@ push_repo() {
   fi
 }
 
-# Moves a package to $TARGET_BRANCH (set by `switch`), ignoring the branch in steve.repos.
-switch_repo() {
-  local name=$1 url=$2 dir="$SRC_DIR/$1"
-  if [ ! -e "$dir/.git" ]; then
-    git ls-remote --exit-code --heads "$url" "$TARGET_BRANCH" >/dev/null 2>&1 \
-      || { info "$name"; warn "not cloned and has no '$TARGET_BRANCH' branch, skipped"; return 0; }
-    sync_repo "$name" "$url" "$TARGET_BRANCH"
-    return
-  fi
-  git -C "$dir" fetch --quiet origin
-  if ! git -C "$dir" rev-parse --verify --quiet "origin/$TARGET_BRANCH" >/dev/null; then
-    info "$name"
-    warn "no '$TARGET_BRANCH' branch, staying on '$(git -C "$dir" branch --show-current)'"
-    return 0
-  fi
-  info "$name ($TARGET_BRANCH)"
-  sync_repo_dir "$dir" "$TARGET_BRANCH"
-}
-
-# The workspace repo itself only follows the switch when <branch> uses the steve.repos layout
-# (old branches with submodules in src/ would clash with the package clones).
+# Moves the workspace repo to <branch>; the sync that follows then reads that branch's steve.repos.
+# Branches without a steve.repos (old submodule layout) are refused: checking one out writes its
+# tracked src/ files over the package clones.
 switch_workspace() {
-  info "workspace ($TARGET_BRANCH)"
+  local branch=$1
+  info "workspace ($branch)"
   git -C "$WS_DIR" fetch --quiet origin
-  if ! git -C "$WS_DIR" cat-file -e "origin/$TARGET_BRANCH:steve.repos" 2>/dev/null; then
-    warn "origin/$TARGET_BRANCH has no steve.repos (old submodule layout), workspace stays on '$(git -C "$WS_DIR" branch --show-current)'"
-    return 0
+  if ! git -C "$WS_DIR" cat-file -e "origin/$branch:steve.repos" 2>/dev/null; then
+    err "origin/$branch has no steve.repos, not switching"
+    exit 1
   fi
-  sync_repo_dir "$WS_DIR" "$TARGET_BRANCH"
+  sync_repo_dir "$WS_DIR" "$branch" || exit 1
 }
 
 # SSH keys git uses for the clones: $SSH_KEYS (space-separated) or, by default, the IdentityFile(s)
@@ -181,10 +164,10 @@ main() {
   case "$cmd" in
     sync|push) unlock_ssh_keys ;;
     switch)
-      TARGET_BRANCH=${2:-}
-      [ -n "$TARGET_BRANCH" ] || { echo "Usage: $0 switch <branch>" >&2; exit 1; }
+      [ -n "${2:-}" ] || { echo "Usage: $0 switch <branch>" >&2; exit 1; }
       unlock_ssh_keys
-      switch_workspace || failed=1 ;;
+      switch_workspace "$2"
+      cmd=sync ;;
     status) ;;
     -h|--help|help) sed -n '2,11p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown command: $cmd (use sync, status, push or switch)" >&2; exit 1 ;;
