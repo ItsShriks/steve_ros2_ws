@@ -4,10 +4,11 @@
 #
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
-#            only the other profile lists are removed from src/
+#            only the other profile lists are removed from src/. Given a profile, sync first
+#            moves the workspace repo to the branch of the same name (dev or test).
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
-# The profile defaults to the last one synced (test at first). Shortcuts: git go-dev / git go-test
+# The profile defaults to the workspace's current branch. Shortcuts: git go-dev / git go-test
 #
 # Only plain git is needed. The .repos files are also vcstool-compatible.
 
@@ -19,8 +20,6 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX GIT_COMMON_DIR GIT_OBJECT_
 
 WS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_DIR="$WS_DIR/src"
-# Last synced profile, kept inside the git dir so it is never committed.
-PROFILE_FILE="$(git -C "$WS_DIR" rev-parse --absolute-git-dir)/steve-repos-profile"
 
 if [ -t 1 ]; then
   BOLD=$'\e[1m'; RED=$'\e[31m'; GREEN=$'\e[32m'; YELLOW=$'\e[33m'; RESET=$'\e[0m'
@@ -181,11 +180,12 @@ main() {
   local cmd=${1:-sync} failed=0
   case "$cmd" in
     sync|push|status) ;;
-    -h|--help|help) sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help|help) sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown command: $cmd (use sync, status or push)" >&2; exit 1 ;;
   esac
 
-  PROFILE=${2:-$(cat "$PROFILE_FILE" 2>/dev/null || echo test)}
+  PROFILE=${2:-$(git -C "$WS_DIR" branch --show-current)}
+  [ -f "$WS_DIR/steve_$PROFILE.repos" ] || PROFILE=${2:-test}
   REPOS_FILE="$WS_DIR/steve_$PROFILE.repos"
   [ -f "$REPOS_FILE" ] || { echo "No repos file for profile '$PROFILE' at $REPOS_FILE" >&2; exit 1; }
   mkdir -p "$SRC_DIR"
@@ -193,12 +193,18 @@ main() {
 
   [ "$cmd" = status ] || unlock_ssh_keys
 
+  # The workspace branch follows the profile: dev settings live on dev, test settings on test.
+  if [ "$cmd" = sync ] && [ "$(git -C "$WS_DIR" branch --show-current)" != "$PROFILE" ]; then
+    info "workspace ($PROFILE)"
+    git -C "$WS_DIR" fetch --quiet origin
+    sync_repo_dir "$WS_DIR" "$PROFILE" || exit 1
+  fi
+
   while read -r name url version; do
     "${cmd}_repo" "$name" "$url" "$version" || failed=1
   done < <(parse_repos)
 
   if [ "$cmd" = sync ]; then
-    echo "$PROFILE" >"$PROFILE_FILE"
     remove_repos $(known_repos)
   fi
 
