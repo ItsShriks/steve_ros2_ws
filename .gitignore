@@ -101,9 +101,6 @@ perception_tests/
 # ------------------------------
 # Each package in src/ is its own clone; only these are tracked in this repo.
 src/*
-!src/steve_manipulation/
-!src/steve_wbc/
-!src/steve_grasping/
 # pixi environments
 .pixi/*
 !.pixi/config.toml
