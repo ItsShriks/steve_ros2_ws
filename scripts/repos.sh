@@ -13,6 +13,10 @@
 
 set -euo pipefail
 
+# Run from a git alias, git exports GIT_DIR for the workspace (it is a submodule of Master_Thesis),
+# which would make every `git -C src/<package>` act on the workspace repo instead.
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX GIT_COMMON_DIR GIT_OBJECT_DIRECTORY
+
 WS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_DIR="$WS_DIR/src"
 # Last synced profile, kept inside the git dir so it is never committed.
