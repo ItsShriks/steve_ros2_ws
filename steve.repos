@@ -5,27 +5,27 @@ repositories:
   steve_perception:
     type: git
     url: git@github.com:pratik-adhikari/steve_perception.git
-    version: test
+    version: dev
   steve_pan_tilt_controller:
     type: git
     url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
-    version: test
+    version: dev
   steve_hardware_bringup:
     type: git
     url: git@github.com:ItsShriks/steve_hardware_bringup.git
-    version: test
+    version: dev
   steve_simulation:
     type: git
     url: git@github.com:ItsShriks/steve_simulation.git
-    version: test
+    version: dev
   steve_navigation:
     type: git
     url: git@github.com:ItsShriks/steve_navigation.git
-    version: test
+    version: dev
   steve_essentials:
     type: git
     url: git@github.com:ItsShriks/steve_essentials.git
-    version: test
+    version: dev
   steve_manipulation:
     type: git
     url: git@github.com:ItsShriks/steve_manipulation.git
