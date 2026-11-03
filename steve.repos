@@ -22,3 +22,11 @@ repositories:
     type: git
     url: git@github.com:ItsShriks/steve_essentials.git
     version: dev
+  steve_pan_tilt_controller:
+    type: git
+    url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
+    version: dev
+  steve_command_grounding:
+    type: git
+    url: git@github.com:RiddheshMore/steve_command_grounding.git
+    version: dev
