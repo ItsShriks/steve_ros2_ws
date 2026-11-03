@@ -5,6 +5,8 @@
 #   sync     (default) clone missing repos, check out their branch, pull latest
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
+#   switch <branch>   put every repo on <branch> (e.g. dev or test) and pull it; repos without
+#                     that branch stay where they are. Shortcuts: git go-dev / git go-test
 #
 # Only plain git is needed. steve.repos is also vcstool-compatible.
 
@@ -50,6 +52,12 @@ sync_repo() {
   fi
 
   git -C "$dir" fetch --quiet origin
+  sync_repo_dir "$dir" "$branch"
+}
+
+# Switches an existing clone to <branch> and fast-forwards it to origin/<branch>.
+sync_repo_dir() {
+  local dir=$1 branch=$2
 
   local current
   current=$(git -C "$dir" branch --show-current)
@@ -58,7 +66,10 @@ sync_repo() {
       err "on '${current:-detached HEAD}' with uncommitted changes, not switching to '$branch'"
       return 1
     fi
-    if ! git -C "$dir" switch --quiet "$branch"; then
+    local create=()
+    git -C "$dir" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null \
+      || create=(--create "$branch" --track "origin/$branch")
+    if ! git -C "$dir" switch --quiet "${create[@]:-$branch}"; then
       err "could not switch to '$branch'"
       return 1
     fi
@@ -103,19 +114,80 @@ push_repo() {
   fi
 }
 
+# Moves a package to $TARGET_BRANCH (set by `switch`), ignoring the branch in steve.repos.
+switch_repo() {
+  local name=$1 url=$2 dir="$SRC_DIR/$1"
+  if [ ! -e "$dir/.git" ]; then
+    git ls-remote --exit-code --heads "$url" "$TARGET_BRANCH" >/dev/null 2>&1 \
+      || { info "$name"; warn "not cloned and has no '$TARGET_BRANCH' branch, skipped"; return 0; }
+    sync_repo "$name" "$url" "$TARGET_BRANCH"
+    return
+  fi
+  git -C "$dir" fetch --quiet origin
+  if ! git -C "$dir" rev-parse --verify --quiet "origin/$TARGET_BRANCH" >/dev/null; then
+    info "$name"
+    warn "no '$TARGET_BRANCH' branch, staying on '$(git -C "$dir" branch --show-current)'"
+    return 0
+  fi
+  info "$name ($TARGET_BRANCH)"
+  sync_repo_dir "$dir" "$TARGET_BRANCH"
+}
+
+# The workspace repo itself only follows the switch when <branch> uses the steve.repos layout
+# (old branches with submodules in src/ would clash with the package clones).
+switch_workspace() {
+  info "workspace ($TARGET_BRANCH)"
+  git -C "$WS_DIR" fetch --quiet origin
+  if ! git -C "$WS_DIR" cat-file -e "origin/$TARGET_BRANCH:steve.repos" 2>/dev/null; then
+    warn "origin/$TARGET_BRANCH has no steve.repos (old submodule layout), workspace stays on '$(git -C "$WS_DIR" branch --show-current)'"
+    return 0
+  fi
+  sync_repo_dir "$WS_DIR" "$TARGET_BRANCH"
+}
+
+# SSH keys git uses for the clones: $SSH_KEYS (space-separated) or, by default, the IdentityFile(s)
+# ssh picks for github.com plus ~/.ssh/id_shriks (the robot's key) — whichever exist.
+ssh_keys() {
+  if [ -n "${SSH_KEYS:-}" ]; then
+    echo "$SSH_KEYS"
+    return
+  fi
+  { ssh -G github.com 2>/dev/null | awk '$1 == "identityfile" { print $2 }'; echo "~/.ssh/id_shriks"; } \
+    | sed "s|^~|$HOME|" | sort -u
+}
+
+# Every sync/push asks for the key passphrase (once per run, not per repository): the run gets its
+# own empty ssh-agent, so a key the desktop keyring or another agent already holds is not used.
+unlock_ssh_keys() {
+  local key added=0
+  eval "$(ssh-agent -s)" >/dev/null
+  trap 'ssh-agent -k >/dev/null' EXIT
+  for key in $(ssh_keys); do
+    [ -f "$key" ] || continue
+    info "SSH key $key"
+    ssh-add -q "$key" </dev/tty && added=1 || warn "not unlocked"
+  done
+  if [ "$added" -eq 0 ]; then
+    err "no SSH key unlocked; nothing pushed or pulled"
+    exit 1
+  fi
+}
+
 main() {
   local cmd=${1:-sync} failed=0
   [ -f "$REPOS_FILE" ] || { echo "No repos file at $REPOS_FILE" >&2; exit 1; }
   mkdir -p "$SRC_DIR"
 
-  if [ -z "${SSH_AUTH_SOCK:-}" ] || ! ssh-add -l &>/dev/null; then
-    echo "${BOLD}🔑 Unlocking SSH key for this sync session...${RESET}"
-    exec ssh-agent sh -c "ssh-add ~/.ssh/id_shriks && bash \"$0\" \"$@\""
-  fi
   case "$cmd" in
-    sync|status|push) ;;
-    -h|--help|help) sed -n '2,9p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
-    *) echo "Unknown command: $cmd (use sync, status or push)" >&2; exit 1 ;;
+    sync|push) unlock_ssh_keys ;;
+    switch)
+      TARGET_BRANCH=${2:-}
+      [ -n "$TARGET_BRANCH" ] || { echo "Usage: $0 switch <branch>" >&2; exit 1; }
+      unlock_ssh_keys
+      switch_workspace || failed=1 ;;
+    status) ;;
+    -h|--help|help) sed -n '2,11p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "Unknown command: $cmd (use sync, status, push or switch)" >&2; exit 1 ;;
   esac
 
   while read -r name url version; do
