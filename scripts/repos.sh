@@ -6,7 +6,8 @@
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
 #   switch <branch>   move the workspace to <branch> (e.g. dev or test), then sync every package
-#                     to the branch that <branch>'s steve.repos lists. Shortcuts: git go-dev / git go-test
+#                     to the branch that <branch>'s steve.repos lists; packages it does not list are
+#                     removed (and cloned again on a branch that lists them). Shortcuts: git go-dev / git go-test
 #
 # Only plain git is needed. steve.repos is also vcstool-compatible.
 
@@ -27,7 +28,7 @@ ok()   { echo "   ${GREEN}$*${RESET}"; }
 warn() { echo "   ${YELLOW}$*${RESET}"; }
 err()  { echo "   ${RED}$*${RESET}"; }
 
-# Prints "name url version" per repository in steve.repos.
+# Prints "name url version" per repository in steve.repos (or in the file given, "-" for stdin).
 parse_repos() {
   awk '
     /^[[:space:]]*#/ { next }
@@ -38,7 +39,15 @@ parse_repos() {
     /^    url:/     { url = $2 }
     /^    version:/ { version = $2 }
     END { if (name != "") print name, url, version }
-  ' "$REPOS_FILE"
+  ' "${1:-$REPOS_FILE}"
+}
+
+# Names of the packages listed in steve.repos on any local branch of the workspace.
+known_repos() {
+  local b
+  for b in $(git -C "$WS_DIR" for-each-ref --format='%(refname:short)' refs/heads); do
+    git -C "$WS_DIR" show "$b:steve.repos" 2>/dev/null | parse_repos - | awk '{ print $1 }'
+  done | sort -u
 }
 
 sync_repo() {
@@ -128,6 +137,27 @@ switch_workspace() {
   sync_repo_dir "$WS_DIR" "$branch" || exit 1
 }
 
+# After a switch, packages other branches list but this one does not are deleted from src/;
+# a switch back clones them again. Clones with uncommitted changes or unpushed commits are kept.
+remove_repos() {
+  local name listed dir
+  listed=$(parse_repos | awk '{ print $1 }')
+  for name in "$@"; do
+    grep -qx "$name" <<<"$listed" && continue
+    dir="$SRC_DIR/$name"
+    [ -e "$dir" ] || continue
+    info "$name"
+    if [ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ] \
+      || [ -n "$(git -C "$dir" log --branches --not --remotes --oneline 2>/dev/null)" ]; then
+      err "not on this branch, but has uncommitted or unpushed work; commit/push it, then rerun"
+      failed=1
+      continue
+    fi
+    rm -rf "$dir"
+    warn "not on this branch, removed"
+  done
+}
+
 # SSH keys git uses for the clones: $SSH_KEYS (space-separated) or, by default, the IdentityFile(s)
 # ssh picks for github.com plus ~/.ssh/id_shriks (the robot's key) — whichever exist.
 ssh_keys() {
@@ -157,7 +187,7 @@ unlock_ssh_keys() {
 }
 
 main() {
-  local cmd=${1:-sync} failed=0
+  local cmd=${1:-sync} failed=0 switched=0
   [ -f "$REPOS_FILE" ] || { echo "No repos file at $REPOS_FILE" >&2; exit 1; }
   mkdir -p "$SRC_DIR"
 
@@ -167,15 +197,16 @@ main() {
       [ -n "${2:-}" ] || { echo "Usage: $0 switch <branch>" >&2; exit 1; }
       unlock_ssh_keys
       switch_workspace "$2"
-      cmd=sync ;;
+      cmd=sync switched=1 ;;
     status) ;;
-    -h|--help|help) sed -n '2,11p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help|help) sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "Unknown command: $cmd (use sync, status, push or switch)" >&2; exit 1 ;;
   esac
 
   while read -r name url version; do
     "${cmd}_repo" "$name" "$url" "$version" || failed=1
   done < <(parse_repos)
+  [ "$switched" -eq 0 ] || remove_repos $(known_repos)
 
   if [ "$failed" -ne 0 ]; then
     echo; err "Some repositories need attention (see above)."
