@@ -5,27 +5,39 @@ repositories:
   steve_perception:
     type: git
     url: git@github.com:pratik-adhikari/steve_perception.git
-    version: dev
-  steve_hardware_bringup:
-    type: git
-    url: git@github.com:ItsShriks/steve_hardware_bringup.git
-    version: dev
-  steve_simulation:
-    type: git
-    url: git@github.com:ItsShriks/steve_simulation.git
-    version: dev
-  steve_navigation:
-    type: git
-    url: git@github.com:ItsShriks/steve_navigation.git
-    version: dev
-  steve_essentials:
-    type: git
-    url: git@github.com:ItsShriks/steve_essentials.git
-    version: dev
+    version: test
   steve_pan_tilt_controller:
     type: git
     url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
-    version: dev
+    version: test
+  steve_hardware_bringup:
+    type: git
+    url: git@github.com:ItsShriks/steve_hardware_bringup.git
+    version: test
+  steve_simulation:
+    type: git
+    url: git@github.com:ItsShriks/steve_simulation.git
+    version: test
+  steve_navigation:
+    type: git
+    url: git@github.com:ItsShriks/steve_navigation.git
+    version: test
+  steve_essentials:
+    type: git
+    url: git@github.com:ItsShriks/steve_essentials.git
+    version: test
+  steve_manipulation:
+    type: git
+    url: git@github.com:ItsShriks/steve_manipulation.git
+    version: test
+  steve_wbc:
+    type: git
+    url: git@github.com:ItsShriks/steve_wbc.git
+    version: test
+  steve_grasping:
+    type: git
+    url: git@github.com:ItsShriks/steve_grasping.git
+    version: test
   steve_command_grounding:
     type: git
     url: git@github.com:RiddheshMore/steve_command_grounding.git
