@@ -92,3 +92,21 @@ gz-transport/
 frames_*.gv
 frames_*.pdf
 docs/
+
+# Perception model code + weights (Contact-GraspNet, GroundingDINO, SAM): large, not tracked
+perception_tests/
+
+# ------------------------------
+# Package repos (managed by steve.repos / scripts/repos.sh)
+# ------------------------------
+# Every package in src/ is its own clone; none are tracked in this repo.
+src/*
+
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Mac (pixi) colcon builds
+build_mac/
+install_mac/
+log_mac/
