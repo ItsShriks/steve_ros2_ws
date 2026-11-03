@@ -108,6 +108,10 @@ main() {
   [ -f "$REPOS_FILE" ] || { echo "No repos file at $REPOS_FILE" >&2; exit 1; }
   mkdir -p "$SRC_DIR"
 
+  if [ -z "${SSH_AUTH_SOCK:-}" ] || ! ssh-add -l &>/dev/null; then
+    echo "${BOLD}🔑 Unlocking SSH key for this sync session...${RESET}"
+    exec ssh-agent sh -c "ssh-add ~/.ssh/id_shriks && bash \"$0\" \"$@\""
+  fi
   case "$cmd" in
     sync|status|push) ;;
     -h|--help|help) sed -n '2,9p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;

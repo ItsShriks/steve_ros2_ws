@@ -30,3 +30,15 @@ repositories:
     type: git
     url: git@github.com:RiddheshMore/steve_command_grounding.git
     version: dev
+  steve_wbc:
+    type: git
+    url: git@github.com:ItsShriks/steve_wbc.git
+    version: test
+  steve_grasping:
+    type: git
+    url: git@github.com:ItsShriks/steve_grasping.git
+    version: test
+  steve_manipulation:
+    type: git
+    url: git@github.com:ItsShriks/steve_manipulation.git
+    version: test
