@@ -6,10 +6,6 @@ repositories:
     type: git
     url: git@github.com:pratik-adhikari/steve_perception.git
     version: dev
-  steve_pan_tilt_controller:
-    type: git
-    url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
-    version: dev
   steve_hardware_bringup:
     type: git
     url: git@github.com:ItsShriks/steve_hardware_bringup.git
@@ -25,20 +21,4 @@ repositories:
   steve_essentials:
     type: git
     url: git@github.com:ItsShriks/steve_essentials.git
-    version: dev
-  steve_manipulation:
-    type: git
-    url: git@github.com:ItsShriks/steve_manipulation.git
-    version: test
-  steve_wbc:
-    type: git
-    url: git@github.com:ItsShriks/steve_wbc.git
-    version: test
-  steve_grasping:
-    type: git
-    url: git@github.com:ItsShriks/steve_grasping.git
-    version: test
-  steve_command_grounding:
-    type: git
-    url: git@github.com:RiddheshMore/steve_command_grounding.git
     version: dev
