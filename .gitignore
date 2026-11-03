@@ -99,11 +99,9 @@ perception_tests/
 # ------------------------------
 # Package repos (managed by steve.repos / scripts/repos.sh)
 # ------------------------------
-# Each package in src/ is its own clone; only these are tracked in this repo.
+# Every package in src/ is its own clone; none are tracked in this repo.
 src/*
-!src/steve_manipulation/
-!src/steve_wbc/
-!src/steve_grasping/
+
 # pixi environments
 .pixi/*
 !.pixi/config.toml
@@ -112,4 +110,3 @@ src/*
 build_mac/
 install_mac/
 log_mac/
-src/steve_wbc/config/tables/
