@@ -4,11 +4,12 @@
 #
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
-#            only the other profile lists are removed from src/. Given a profile, sync first
-#            moves the workspace repo to the branch of the same name (dev or test).
+#            only the other profile lists are removed from src/, build/ and install/. Given a
+#            profile, sync first moves the workspace repo to the branch of the same name.
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
 # The profile defaults to the workspace's current branch. Shortcuts: git go-dev / git go-test
+# (any run adds them to the clone's git config)
 #
 # Only plain git is needed. The .repos files are also vcstool-compatible.
 
@@ -127,6 +128,16 @@ push_repo() {
   fi
 }
 
+# Deletes build/<pkg> and install/<pkg> of every ROS package in the clone <dir>, so a removed
+# package is not still found in the overlay.
+remove_builds() {
+  local pkg
+  for pkg in $(find "$1" -name package.xml -not -path '*/.git/*' \
+      -exec sed -n '/<name>/{s|.*<name>\(.*\)</name>.*|\1|p;q}' {} \;); do
+    rm -rf "$WS_DIR/build/$pkg" "$WS_DIR/install/$pkg"
+  done
+}
+
 # Packages another profile lists but this one does not are deleted from src/; syncing that profile
 # clones them again. Clones with uncommitted changes or unpushed commits are kept.
 remove_repos() {
@@ -143,8 +154,9 @@ remove_repos() {
       failed=1
       continue
     fi
+    remove_builds "$dir"
     rm -rf "$dir"
-    warn "not in the $PROFILE profile, removed"
+    warn "not in the $PROFILE profile, removed (with its build/ and install/)"
   done
 }
 
@@ -189,6 +201,11 @@ main() {
   REPOS_FILE="$WS_DIR/steve_$PROFILE.repos"
   [ -f "$REPOS_FILE" ] || { echo "No repos file for profile '$PROFILE' at $REPOS_FILE" >&2; exit 1; }
   mkdir -p "$SRC_DIR"
+
+  # The shortcuts live in the clone's own config, so each fresh clone gets them on its first run.
+  git -C "$WS_DIR" config alias.go-dev '!./scripts/repos.sh sync dev'
+  git -C "$WS_DIR" config alias.go-test '!./scripts/repos.sh sync test'
+
   echo "${BOLD}Profile: $PROFILE${RESET} ($(basename "$REPOS_FILE"))"
 
   [ "$cmd" = status ] || unlock_ssh_keys
