@@ -5,7 +5,8 @@
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
 #            only the other profile lists are removed from src/, build/ and install/. Given a
-#            profile, sync first moves the workspace repo to the branch of the same name.
+#            profile, sync first moves the workspace repo to the branch of the same name and
+#            deletes the local branch it left (unless that has unpushed commits).
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
 # The profile defaults to the workspace's current branch. Shortcuts: git go-dev / git go-test
@@ -192,7 +193,7 @@ main() {
   local cmd=${1:-sync} failed=0
   case "$cmd" in
     sync|push|status) ;;
-    -h|--help|help) sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help|help) awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}"; exit 0 ;;
     *) echo "Unknown command: $cmd (use sync, status or push)" >&2; exit 1 ;;
   esac
 
@@ -212,9 +213,22 @@ main() {
 
   # The workspace branch follows the profile: dev settings live on dev, test settings on test.
   if [ "$cmd" = sync ] && [ "$(git -C "$WS_DIR" branch --show-current)" != "$PROFILE" ]; then
+    local previous
+    previous=$(git -C "$WS_DIR" branch --show-current)
     info "workspace ($PROFILE)"
     git -C "$WS_DIR" fetch --quiet origin
     sync_repo_dir "$WS_DIR" "$PROFILE" || exit 1
+    # Drop the branch we left, so switching back creates it fresh from origin (even if origin was
+    # rewritten). A branch with commits origin does not have is kept.
+    if [ -n "$previous" ]; then
+      if [ -z "$(git -C "$WS_DIR" rev-list "origin/$previous..$previous" 2>/dev/null)" ] \
+        && git -C "$WS_DIR" rev-parse --verify --quiet "origin/$previous" >/dev/null; then
+        git -C "$WS_DIR" branch --quiet -D "$previous"
+        warn "deleted local '$previous' (on origin; recreated on switch back)"
+      else
+        warn "kept local '$previous': it has commits not on origin/$previous"
+      fi
+    fi
   fi
 
   while read -r name url version; do
