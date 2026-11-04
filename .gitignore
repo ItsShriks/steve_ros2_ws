@@ -110,3 +110,12 @@ src/*
 build_mac/
 install_mac/
 log_mac/
+
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz

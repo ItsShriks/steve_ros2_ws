@@ -33,11 +33,13 @@ Install required ROS 2 packages:
 
 ```bash
 sudo apt install \
+  ros-humble-xacro \
   ros-humble-nav2-bringup \
   ros-humble-slam-toolbox \
   ros-humble-joy \
   ros-humble-teleop-twist-joy \
   ros-humble-gazebo-ros-pkgs \
+  ros-humble-gazebo-ros2-control \
   ros-humble-realsense2-camera
 ```
 
@@ -185,4 +187,3 @@ This workspace includes a `.devcontainer` configuration for VSCode, allowing you
 1. Open the workspace in VSCode.
 2. When prompted, select **"Reopen in Container"**.
 
----
