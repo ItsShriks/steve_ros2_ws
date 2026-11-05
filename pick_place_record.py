@@ -3,9 +3,15 @@
 pick_place_record.py — the xArm "Jessie" pick-and-place joint sequence replayed on Steve's UR5 in MuJoCo,
 recorded like the xArm's /xarm/joint_states bag -> CSV.
 
+macOS (pixi):
     pixi run python src/steve_wbc/steve_wbc/pick_place_record.py                     # headless, CSVs
     pixi run python src/steve_wbc/steve_wbc/pick_place_record.py --tool ability_hand
-    mjpython src/steve_wbc/steve_wbc/pick_place_record.py --viewer                   # watch it (macOS)
+    pixi run mjpython src/steve_wbc/steve_wbc/pick_place_record.py --viewer          # watch it
+
+Ubuntu (venv with mujoco>=3.16, numpy, scipy, pyyaml; see the README):
+    python src/steve_wbc/steve_wbc/pick_place_record.py                              # headless, CSVs
+    python src/steve_wbc/steve_wbc/pick_place_record.py --tool ability_hand
+    python src/steve_wbc/steve_wbc/pick_place_record.py --viewer                     # watch it
 
 The waypoints are the xArm's joint angles [deg]. --joint_map xarm (default) converts them to the UR5's
 zero pose (xarm_to_ur: the arm pose looks like the xArm's — home tool-down, pick / place a forward side
@@ -44,7 +50,7 @@ try:
     from steve_wbc.steve_figure8_wbc import ARM_JOINTS, BASE_JOINTS, load_model, resolve_model
     from steve_grasping.gripper import SimGripper
     from steve_grasping.tools import DEFAULT_TOOL, TOOLS, load_tool
-except ImportError:  # plain script from the source tree (e.g. macOS: steve_grasping not in the Mac overlay)
+except ImportError:  # plain script from the source tree (macOS: steve_grasping not in the Mac overlay; Ubuntu: no colcon build)
     import sys
     SCRIPT_DIR = Path(__file__).resolve().parent
     sys.path[:0] = [str(SCRIPT_DIR), str(SCRIPT_DIR.parents[1] / "steve_grasping")]
@@ -391,7 +397,7 @@ def main():
     p.add_argument("--grip_time", type=float, default=1.0, help="time the gripper takes to open / close [s]")
     p.add_argument("--rate", type=float, default=100.0, help="joint_states rate [Hz]")
     p.add_argument("--out", type=Path, default=None, help="CSV folder (default ./sim_data/pick_place_<ts>/csv)")
-    p.add_argument("--viewer", action="store_true", help="MuJoCo viewer in real time (macOS: run with mjpython)")
+    p.add_argument("--viewer", action="store_true", help="MuJoCo viewer in real time (macOS: run with mjpython; Ubuntu: plain python)")
     a = p.parse_args()
     out = a.out or Path("sim_data") / f"pick_place_{datetime.now().strftime('%Y%m%d_%H%M%S')}" / "csv"
     sim = PickPlaceSim(a)
