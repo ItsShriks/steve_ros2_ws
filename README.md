@@ -47,14 +47,14 @@ Both need Python 3.10 or newer and MuJoCo 3.16 or newer. The script fails with o
 
 ### Steps
 
-1. **Clone the main workspace and its `test` packages** (skip this if you already have them):
+1. **Clone the main workspace and its `test` packages** over HTTPS (skip this if you already have them):
    ```bash
-   git clone git@github.com:ItsShriks/steve_ros2_ws.git
+   git clone -b test https://github.com/ItsShriks/steve_ros2_ws.git
    cd steve_ros2_ws
    ./scripts/repos.sh sync test
    ```
-   This needs SSH access to GitHub and switches the workspace to its `test` branch. Only the `test` package
-   list contains `steve_wbc`, `steve_grasping` and `steve_manipulation`.
+   You don't need a GitHub account or SSH key, because these repositories are public. Use the `test` profile:
+   the `dev` package list doesn't include `steve_wbc`, `steve_grasping` and `steve_manipulation`.
 
 2. **Get the script from this branch** and put it into the `steve_wbc` package:
    ```bash
