@@ -32,7 +32,8 @@ Output (--out, default ./sim_data/pick_place_<timestamp>/csv):
                                  joint<i>_position [rad] / _velocity [rad/s] / _effort [Nm],
                                  left_finger_* / right_finger_* (FINGER_JOINTS: the tool's finger joints;
                                  Robotiq: the driver knuckle, 0 open .. 0.8 rad closed; position quantised
-                                 to the real gripper's 0..255 steps)
+                                 to the real gripper's 0..255 steps),
+                                 phase (the SEQUENCE phase the sample was taken in; pre_roll before the motion)
   <phase>_joint_states.csv       the rows of one phase (same columns)
   phase_timestamps.csv           phase, start_time_ns, end_time_ns
 """
@@ -207,7 +208,7 @@ class PickPlaceSim:
         self.n_rec = max(1, int(round(1.0 / (a.rate * m.opt.timestep))))
         self.t0_ns = time.time_ns()
         self.rows, self.phase_log = [], []
-        self.n_step, self.phase = 0, "home"
+        self.n_step, self.phase = 0, "pre_roll"
         self.rng = np.random.default_rng(a.seed)
         self.noise = 0.0 if a.no_noise else a.noise_scale
         self.effort_offset = self.rng.normal(0.0, NOISE["effort_offset"] * self.noise, 6)
@@ -350,7 +351,7 @@ class PickPlaceSim:
     def save(self, out):
         out.mkdir(parents=True, exist_ok=True)
         self.rows.sort(key=lambda r: r["bag_time_ns"])  # bag order: by receive time
-        cols = [c for c in self.rows[0] if c != "phase"]
+        cols = list(self.rows[0])  # phase last: the joint columns keep their positions
         _write_csv(out / "full_motion_joint_states.csv", self.rows, cols)
         for phase in PHASES:
             _write_csv(out / f"{phase}_joint_states.csv", [r for r in self.rows if r["phase"] == phase], cols)
