@@ -1,32 +1,41 @@
 # Package repositories cloned into src/ (vcstool-compatible).
-# `version` is the branch each package tracks. Change it here to switch branches.
+# `url` is the GitLab repository, `github` its GitHub copy: repos.sh fetches from one host (the one the
+# workspace was cloned from, or $REPOS_HOST) and pushes to both. `version` is the branch each package
+# tracks. Change it here to switch branches.
 # Sync with:  ./scripts/repos.sh sync dev   (or: git go-dev)
 repositories:
   steve_perception:
     type: git
-    url: git@github.com:pratik-adhikari/steve_perception.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_perception.git
+    github: git@github.com:pratik-adhikari/steve_perception.git
     version: dev
   steve_hardware_bringup:
     type: git
-    url: git@github.com:ItsShriks/steve_hardware_bringup.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_hardware_bringup.git
+    github: git@github.com:ItsShriks/steve_hardware_bringup.git
     version: dev
   steve_simulation:
     type: git
-    url: git@github.com:ItsShriks/steve_simulation.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_simulation.git
+    github: git@github.com:ItsShriks/steve_simulation.git
     version: dev
   steve_navigation:
     type: git
-    url: git@github.com:ItsShriks/steve_navigation.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_navigation.git
+    github: git@github.com:ItsShriks/steve_navigation.git
     version: dev
   steve_essentials:
     type: git
-    url: git@github.com:ItsShriks/steve_essentials.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_essentials.git
+    github: git@github.com:ItsShriks/steve_essentials.git
     version: dev
   steve_pan_tilt_controller:
     type: git
-    url: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_pan_tilt_controller.git
+    github: git@github.com:RiddheshMore/steve_pan_tilt_controller.git
     version: dev
   steve_command_grounding:
     type: git
-    url: git@github.com:RiddheshMore/steve_command_grounding.git
+    url: git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_command_grounding.git
+    github: git@github.com:RiddheshMore/steve_command_grounding.git
     version: dev
