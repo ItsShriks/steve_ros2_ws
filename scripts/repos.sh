@@ -9,8 +9,15 @@
 #            deletes the local branch it left (unless that has unpushed commits).
 #   status   show branch, ahead/behind and local changes for every repo
 #   push     push every repo that has local commits on its branch
+#   mirror   copy all branches and tags of every repository (workspace, packages of both profiles,
+#            steve_essentials' submodules) from the fetch host to the other one; branches that
+#            diverged are reported, never overwritten
 # The profile defaults to the workspace's current branch. Shortcuts: git go-dev / git go-test
 # (any run adds them to the clone's git config)
+#
+# Every repository is on GitLab (hrl_software/steve-moma, `url` in the .repos files) and on GitHub
+# (`github`). Clones fetch from one host and push to both. The fetch host is $REPOS_HOST (gitlab or
+# github) or, if unset, the host the workspace's origin points at; sync moves every clone to it.
 #
 # Only plain git is needed. The .repos files are also vcstool-compatible.
 
@@ -22,6 +29,9 @@ unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_PREFIX GIT_COMMON_DIR GIT_OBJECT_
 
 WS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_DIR="$WS_DIR/src"
+# The workspace repo itself; the packages' URLs are in the .repos files.
+WS_GITLAB="git@gitlab.igg.uni-bonn.de:hrl_software/steve-moma/steve_ros2_ws.git"
+WS_GITHUB="git@github.com:ItsShriks/steve_ros2_ws.git"
 
 if [ -t 1 ]; then
   BOLD=$'\e[1m'; RED=$'\e[31m'; GREEN=$'\e[32m'; YELLOW=$'\e[33m'; RESET=$'\e[0m'
@@ -34,18 +44,40 @@ ok()   { echo "   ${GREEN}$*${RESET}"; }
 warn() { echo "   ${YELLOW}$*${RESET}"; }
 err()  { echo "   ${RED}$*${RESET}"; }
 
-# Prints "name url version" per repository in $REPOS_FILE (or in the file given).
+# Prints "name url version github" per repository in $REPOS_FILE (or in the file given).
 parse_repos() {
   awk '
     /^[[:space:]]*#/ { next }
     /^  [A-Za-z0-9_.-]+:[[:space:]]*$/ {
-      if (name != "") print name, url, version
-      name = $1; sub(/:$/, "", name); url = ""; version = ""
+      if (name != "") print name, url, version, github
+      name = $1; sub(/:$/, "", name); url = ""; version = ""; github = ""
     }
     /^    url:/     { url = $2 }
+    /^    github:/  { github = $2 }
     /^    version:/ { version = $2 }
-    END { if (name != "") print name, url, version }
+    END { if (name != "") print name, url, version, github }
   ' "${1:-$REPOS_FILE}"
+}
+
+# The URL of <gitlab-url> <github-url> on host <gitlab|github>.
+host_url() {
+  if [ "$1" = github ] && [ -n "$3" ]; then echo "$3"; else echo "$2"; fi
+}
+
+# Points origin of the clone <dir> at the fetch host and makes it push to both hosts.
+set_remotes() {
+  local dir=$1 gitlab=$2 github=$3 fetch
+  fetch=$(host_url "$HOST" "$gitlab" "$github")
+  if [ "$(git -C "$dir" remote get-url origin 2>/dev/null)" != "$fetch" ]; then
+    git -C "$dir" remote set-url origin "$fetch"
+    warn "origin set to $fetch"
+  fi
+  [ -n "$github" ] || return 0
+  if [ "$(git -C "$dir" config --get-all remote.origin.pushurl | tr '\n' ' ')" != "$gitlab $github " ]; then
+    git -C "$dir" config --unset-all remote.origin.pushurl || true
+    git -C "$dir" config --add remote.origin.pushurl "$gitlab"
+    git -C "$dir" config --add remote.origin.pushurl "$github"
+  fi
 }
 
 # Names of the packages listed in any profile's .repos file.
@@ -57,15 +89,17 @@ known_repos() {
 }
 
 sync_repo() {
-  local name=$1 url=$2 branch=$3 dir="$SRC_DIR/$1"
+  local name=$1 url=$2 branch=$3 github=${4:-} dir="$SRC_DIR/$1"
   info "$name ($branch)"
 
   if [ ! -e "$dir/.git" ]; then
-    git clone --recurse-submodules --branch "$branch" "$url" "$dir"
+    git clone --recurse-submodules --branch "$branch" "$(host_url "$HOST" "$url" "$github")" "$dir"
+    set_remotes "$dir" "$url" "$github"
     ok "cloned"
     return
   fi
 
+  set_remotes "$dir" "$url" "$github"
   git -C "$dir" fetch --quiet origin
   sync_repo_dir "$dir" "$branch"
 }
@@ -97,7 +131,9 @@ sync_repo_dir() {
   fi
 
   # Packages with their own submodules (e.g. steve_essentials) keep those at the pinned commits.
+  # Their URLs are relative (../<name>.git), so sync points them at the package's fetch host.
   if [ -f "$dir/.gitmodules" ]; then
+    git -C "$dir" submodule sync --recursive --quiet
     git -C "$dir" submodule update --init --recursive --quiet
   fi
   ok "up to date at $(git -C "$dir" log -1 --format='%h %s')"
@@ -124,9 +160,47 @@ push_repo() {
   local ahead
   ahead=$(git -C "$dir" rev-list --count "origin/$branch..$branch" 2>/dev/null || echo 0)
   if [ "$ahead" -gt 0 ]; then
-    info "$name: pushing $ahead commit(s) to origin/$branch"
+    info "$name: pushing $ahead commit(s) to origin/$branch (GitLab and GitHub)"
     git -C "$dir" push origin "$branch"
   fi
+}
+
+# Copies all branches and tags of one repository from <from> to <to> through a bare cache in
+# ~/.cache/steve_repos_mirror, so later runs only download what is new.
+mirror_one() {
+  local name=$1 from=$2 to=$3 cache="${XDG_CACHE_HOME:-$HOME/.cache}/steve_repos_mirror/$1.git"
+  info "$name: $from -> $to"
+  [ -d "$cache" ] || git init --quiet --bare "$cache"
+  if ! git -C "$cache" fetch --quiet --prune "$from" '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*'; then
+    err "could not fetch $from"
+    return 1
+  fi
+  if git -C "$cache" push --quiet "$to" 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'; then
+    ok "$(git -C "$cache" for-each-ref refs/heads | wc -l) branch(es), $(git -C "$cache" for-each-ref refs/tags | wc -l) tag(s)"
+  else
+    err "push to $to rejected (diverged branch, or the project does not exist / no access)"
+    return 1
+  fi
+}
+
+# <url> with its last path component replaced by <name>.git, for relative submodule URLs.
+sibling_url() { echo "${1%/*}/$2.git"; }
+
+mirror_all() {
+  local other=gitlab name url version github sub rel
+  [ "$HOST" = gitlab ] && other=github
+  mirror_one steve_ros2_ws "$(host_url "$HOST" "$WS_GITLAB" "$WS_GITHUB")" "$(host_url "$other" "$WS_GITLAB" "$WS_GITHUB")" || failed=1
+  while read -r name url version github; do
+    [ -n "$github" ] || { warn "$name has no github URL, skipped"; continue; }
+    mirror_one "$name" "$(host_url "$HOST" "$url" "$github")" "$(host_url "$other" "$url" "$github")" || failed=1
+    [ -f "$SRC_DIR/$name/.gitmodules" ] || continue
+    while read -r sub rel; do
+      case "$rel" in ../*) ;; *) continue ;; esac
+      sub=${rel#../}; sub=${sub%.git}
+      mirror_one "$sub" "$(sibling_url "$(host_url "$HOST" "$url" "$github")" "$sub")" \
+        "$(sibling_url "$(host_url "$other" "$url" "$github")" "$sub")" || failed=1
+    done < <(git config -f "$SRC_DIR/$name/.gitmodules" --get-regexp '^submodule\..*\.url$')
+  done < <(for f in "$WS_DIR"/steve_*.repos; do parse_repos "$f"; done | sort -u -k1,1)
 }
 
 # Deletes build/<pkg> and install/<pkg> of every ROS package in the clone <dir>, so a removed
@@ -162,13 +236,16 @@ remove_repos() {
 }
 
 # SSH keys git uses for the clones: $SSH_KEYS (space-separated) or, by default, the IdentityFile(s)
-# ssh picks for github.com plus ~/.ssh/id_shriks (the robot's key) — whichever exist.
+# ssh picks for gitlab.igg.uni-bonn.de and github.com plus ~/.ssh/id_shriks (the robot's key) —
+# whichever exist.
 ssh_keys() {
   if [ -n "${SSH_KEYS:-}" ]; then
     echo "$SSH_KEYS"
     return
   fi
-  { ssh -G github.com 2>/dev/null | awk '$1 == "identityfile" { print $2 }'; echo "~/.ssh/id_shriks"; } \
+  { for h in gitlab.igg.uni-bonn.de github.com; do
+      ssh -G "$h" 2>/dev/null | awk '$1 == "identityfile" { print $2 }'
+    done; echo "~/.ssh/id_shriks"; } \
     | sed "s|^~|$HOME|" | sort -u
 }
 
@@ -192,9 +269,9 @@ unlock_ssh_keys() {
 main() {
   local cmd=${1:-sync} failed=0
   case "$cmd" in
-    sync|push|status) ;;
+    sync|push|status|mirror) ;;
     -h|--help|help) awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}"; exit 0 ;;
-    *) echo "Unknown command: $cmd (use sync, status or push)" >&2; exit 1 ;;
+    *) echo "Unknown command: $cmd (use sync, status, push or mirror)" >&2; exit 1 ;;
   esac
 
   PROFILE=${2:-$(git -C "$WS_DIR" branch --show-current)}
@@ -207,9 +284,31 @@ main() {
   git -C "$WS_DIR" config alias.go-dev '!./scripts/repos.sh sync dev'
   git -C "$WS_DIR" config alias.go-test '!./scripts/repos.sh sync test'
 
-  echo "${BOLD}Profile: $PROFILE${RESET} ($(basename "$REPOS_FILE"))"
+  HOST=${REPOS_HOST:-}
+  if [ -z "$HOST" ]; then
+    case "$(git -C "$WS_DIR" remote get-url origin 2>/dev/null)" in
+      *github.com*) HOST=github ;;
+      *) HOST=gitlab ;;
+    esac
+  fi
+  case "$HOST" in
+    gitlab|github) ;;
+    *) echo "REPOS_HOST must be gitlab or github, not '$HOST'" >&2; exit 1 ;;
+  esac
+
+  echo "${BOLD}Profile: $PROFILE${RESET} ($(basename "$REPOS_FILE")), fetching from $HOST, pushing to both"
 
   [ "$cmd" = status ] || unlock_ssh_keys
+
+  if [ "$cmd" = mirror ]; then
+    mirror_all
+    [ "$failed" -eq 0 ] || { echo; err "Some repositories were not mirrored (see above)."; exit 1; }
+    exit 0
+  fi
+
+  if [ "$cmd" = sync ]; then
+    set_remotes "$WS_DIR" "$WS_GITLAB" "$WS_GITHUB"
+  fi
 
   # The workspace branch follows the profile: dev settings live on dev, test settings on test.
   if [ "$cmd" = sync ] && [ "$(git -C "$WS_DIR" branch --show-current)" != "$PROFILE" ]; then
@@ -231,8 +330,8 @@ main() {
     fi
   fi
 
-  while read -r name url version; do
-    "${cmd}_repo" "$name" "$url" "$version" || failed=1
+  while read -r name url version github; do
+    "${cmd}_repo" "$name" "$url" "$version" "$github" || failed=1
   done < <(parse_repos)
 
   if [ "$cmd" = sync ]; then
