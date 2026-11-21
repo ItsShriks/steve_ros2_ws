@@ -1,14 +1,14 @@
 # ==============================================================================
 # Steve Robot - Multi-Machine ROS2 Makefile
 # ==============================================================================
-# Main robot: Native ROS2 (add to ~/.bashrc: export ROS_DOMAIN_ID=42)
+# Main robot: Native ROS2 (add to ~/.bashrc: export ROS_DOMAIN_ID=69)
 # Secondary machines: Docker (use targets below)
 # ==============================================================================
 
 # Configuration
 IMAGE_NAME ?= steve-ros2-humble
 CONTAINER_NAME ?= steve_robot
-ROS_DOMAIN_ID ?= 42
+ROS_DOMAIN_ID ?= 69
 
 # Optional: Robot namespace for multi-robot scenarios
 ROBOT_NAMESPACE ?= steve
