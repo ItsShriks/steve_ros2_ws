@@ -65,8 +65,8 @@ The profile follows the workspace branch: on `test` the script uses `steve_test.
 | Command | What it does |
 |---|---|
 | `./scripts/repos.sh` | Clone missing packages, switch each to its branch, fast-forward to the latest commit. Also sets every clone's `origin` to fetch from the fetch host and push to both |
-| `./scripts/repos.sh status` | Show branch, ahead/behind and local changes for each package |
-| `./scripts/repos.sh push` | Push every package that has unpushed commits (to GitLab and GitHub) |
+| `./scripts/repos.sh status` | Show branch, ahead/behind and local changes for each package (and `steve_essentials` submodule) |
+| `./scripts/repos.sh push` | Push every package (and `steve_essentials` submodule) that has unpushed commits (to GitLab and GitHub) |
 | `./scripts/repos.sh mirror` | Copy all branches and tags of every repository (also `steve_essentials`' submodules) from the fetch host to the other one |
 
 Typical workflow:
@@ -80,6 +80,7 @@ git push                                # or ./scripts/repos.sh push from the ro
 
 - **Switch a package to another branch:** change its `version:` in the profile's repos file, run `./scripts/repos.sh`, and commit that file. This is the only change that needs a main-repo commit.
 - **Add a package:** add an entry to the profile's repos file and run `./scripts/repos.sh`.
+- **`steve_essentials` submodules** (Neobotix drivers, `joystick_drivers`, `realsense-ros`) are handled like packages: `sync` puts each on the branch named by `branch = ...` in `steve_essentials`' `.gitmodules` and fast-forwards it to the latest commit, instead of leaving it detached at the pinned commit. `status` and `push` include them. To switch one to another branch, change its `branch` in `.gitmodules` (on `steve_essentials`' `test` branch, `neo_kinematics_omnidrive2` follows `test`; the rest follow `dev`).
 - **GitLab and GitHub:** each repos entry has a GitLab `url` and a `github` URL. Every clone (workspace and packages) fetches from one host and pushes to both, so a plain `git push` updates GitLab and GitHub together. The fetch host is the one the workspace was cloned from. Change it with `REPOS_HOST=gitlab ./scripts/repos.sh` (or `github`). The `steve_essentials` submodules use relative URLs (`../neo_msgs2.git`), so they come from the same host as `steve_essentials`.
 - If one host fell behind (a push made outside these clones), `./scripts/repos.sh mirror` brings it up to date. It never force-pushes: a diverged branch is reported, not overwritten.
 - `sync` never overwrites your work. It refuses to switch branches when there are uncommitted changes and stops if a branch has diverged from origin.
