@@ -70,6 +70,13 @@ host_url() {
 # Points origin of the clone <dir> at the fetch host and makes it push to both hosts.
 set_remotes() {
   local dir=$1 gitlab=$2 github=$3 fetch
+  # Plain git commands in a clone (pull, push) use the owner's key on test where it exists, and
+  # the contributor's own keys on dev.
+  if [ "$PROFILE" = test ] && [ -f "$(test_key)" ]; then
+    git -C "$dir" config core.sshCommand "ssh -i $(test_key) -o IdentitiesOnly=yes"
+  else
+    git -C "$dir" config --unset core.sshCommand || true
+  fi
   fetch=$(host_url "$HOST" "$gitlab" "$github")
   if [ "$(git -C "$dir" remote get-url origin 2>/dev/null)" != "$fetch" ]; then
     git -C "$dir" remote set-url origin "$fetch"
@@ -304,24 +311,37 @@ remove_repos() {
   done
 }
 
-# SSH keys git uses for the clones: $SSH_KEYS (space-separated) or, by default, the IdentityFile(s)
-# ssh picks for gitlab.igg.uni-bonn.de and github.com plus ~/.ssh/id_shriks (the robot's key) —
-# whichever exist.
+# The owner's key, $STEVE_TEST_KEY or ~/.ssh/id_shriks: only the test profile uses it (the private
+# packages). On the robot, where everyone shares one account, the dev profile never touches it.
+test_key() { echo "${STEVE_TEST_KEY:-$HOME/.ssh/id_shriks}"; }
+
+# SSH keys for this run: $SSH_KEYS (space-separated); else on test the owner's key if this machine
+# has it; else the IdentityFile(s) ssh picks for gitlab.igg.uni-bonn.de and github.com (on dev: the
+# contributor's own keys, from ~/.ssh/config), never the owner's key on dev.
 ssh_keys() {
   if [ -n "${SSH_KEYS:-}" ]; then
     echo "$SSH_KEYS"
     return
   fi
-  { for h in gitlab.igg.uni-bonn.de github.com; do
-      ssh -G "$h" 2>/dev/null | awk '$1 == "identityfile" { print $2 }'
-    done; echo "~/.ssh/id_shriks"; } \
-    | sed "s|^~|$HOME|" | sort -u
+  if [ "$PROFILE" = test ] && [ -f "$(test_key)" ]; then
+    test_key
+    return
+  fi
+  for h in gitlab.igg.uni-bonn.de github.com; do
+    ssh -G "$h" 2>/dev/null | awk '$1 == "identityfile" { print $2 }'
+  done | sed "s|^~|$HOME|" | sort -u | grep -vxF "$(test_key)" || true
 }
 
-# Every sync/push asks for the key passphrase (once per run, not per repository): the run gets its
-# own empty ssh-agent, so a key the desktop keyring or another agent already holds is not used.
+# Each run gets its own empty ssh-agent and asks for the key passphrases once (not per repository),
+# so a key another agent already holds is not used. On test the owner's key must unlock. On dev a
+# run with an agent that already holds keys (e.g. forwarded with ssh -A) uses that agent instead,
+# and if no key unlocks, git falls back to ssh's own choice.
 unlock_ssh_keys() {
   local key added=0
+  if [ "$PROFILE" != test ] && [ -z "${SSH_KEYS:-}" ] && ssh-add -l >/dev/null 2>&1; then
+    info "SSH keys from the running agent ($(ssh-add -l | wc -l))"
+    return
+  fi
   eval "$(ssh-agent -s)" >/dev/null
   trap 'ssh-agent -k >/dev/null' EXIT
   for key in $(ssh_keys); do
@@ -330,8 +350,12 @@ unlock_ssh_keys() {
     ssh-add -q "$key" </dev/tty && added=1 || warn "not unlocked"
   done
   if [ "$added" -eq 0 ]; then
-    err "no SSH key unlocked; nothing pushed or pulled"
-    exit 1
+    if [ "$PROFILE" = test ]; then
+      err "no SSH key unlocked; nothing pushed or pulled"
+      exit 1
+    fi
+    ssh-agent -k >/dev/null; trap - EXIT; unset SSH_AUTH_SOCK SSH_AGENT_PID
+    warn "no key unlocked; using ssh's own keys (~/.ssh/config)"
   fi
 }
 
