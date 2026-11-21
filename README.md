@@ -32,7 +32,7 @@ Every repository is also on GitHub. Cloning the workspace from there works the s
 git clone git@github.com:ItsShriks/steve_ros2_ws.git -b test
 ```
 
-All repositories live in the GitLab group [`hrl_software/steve-moma`](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma), with a copy of each on GitHub (see [Package Descriptions](#package-descriptions)). The packages are **not** submodules: each folder in `src/` is a normal git clone on the branch listed in the profile's repos file ([`steve_test.repos`](steve_test.repos) or [`steve_dev.repos`](steve_dev.repos)). See [Working with Package Repositories](#working-with-package-repositories).
+All repositories live in the GitLab group [`hrl_software/steve-moma`](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma), with a copy of each on GitHub (see [Package Descriptions](#package-descriptions)). `steve_wbc` is the exception: it is only on [GitHub](https://github.com/ItsShriks/steve_wbc). The packages are **not** submodules: each folder in `src/` is a normal git clone on the branch listed in the profile's repos file ([`steve_test.repos`](steve_test.repos) or [`steve_dev.repos`](steve_dev.repos)). See [Working with Package Repositories](#working-with-package-repositories).
 
 ### 2. Install Dependencies
 Install required ROS 2 packages:
@@ -124,7 +124,7 @@ ros2 launch steve_navigation slam.launch.py use_sim_time:=true
 | `steve_command_grounding` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_command_grounding) · [GitHub](https://github.com/RiddheshMore/steve_command_grounding) |
 | `steve_hardware_bringup` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_hardware_bringup) · [GitHub](https://github.com/ItsShriks/steve_hardware_bringup) |
 | `steve_manipulation` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_manipulation) · [GitHub](https://github.com/ItsShriks/steve_manipulation) |
-| `steve_wbc` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_wbc) · [GitHub](https://github.com/ItsShriks/steve_wbc) |
+| `steve_wbc` | [GitHub](https://github.com/ItsShriks/steve_wbc) (GitHub only) |
 | `steve_grasping` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_grasping) · [GitHub](https://github.com/ItsShriks/steve_grasping) |
 | `steve_pan_tilt_controller` | [GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_pan_tilt_controller) · [GitHub](https://github.com/RiddheshMore/steve_pan_tilt_controller) |
 
@@ -168,7 +168,7 @@ MoveIt 2 motion planning and control for the UR5e arm and Robotiq 2F-85 gripper 
 ### `steve_wbc`
 **Whole-Body Control**  
 Velocity-level whole-body controller over base + arm (9 DOF) as a strict task hierarchy, with the grasping pipeline and web GUI.  
-[GitLab](https://gitlab.igg.uni-bonn.de/hrl_software/steve-moma/steve_wbc) · [GitHub](https://github.com/ItsShriks/steve_wbc)
+[GitHub](https://github.com/ItsShriks/steve_wbc) (GitHub only)
 
 ### `steve_grasping`
 **End Effectors & Grasps**  
