@@ -41,7 +41,7 @@ cat > "$PEERS_XML" <<EOF
 </profiles>
 EOF
 
-export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:-74}"
+export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:-69}"
 export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 export ROS_LOCALHOST_ONLY=0
 export FASTRTPS_DEFAULT_PROFILES_FILE="$PEERS_XML"

@@ -206,6 +206,15 @@ When connecting to the physical robot (Ubuntu 20/22):
 
 Configure your network settings to match the robot's subnet for proper communication.
 
+**ROS domain: `ROS_DOMAIN_ID=69`** for everyone working with Steve (the robot, the `dev` and `test` profiles, every PC and container). Nodes on another domain do not see the robot's topics. The robot sets it in `~/.bashrc` and `~/ROS_AUTOSTART.sh` (bringup at boot); on a PC, set it in every terminal (or `~/.bashrc`):
+
+```bash
+export ROS_DOMAIN_ID=69 RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+ros2 daemon stop   # the daemon keeps the old domain
+```
+
+`scripts/mac_dds_env.sh`, the `Makefile` and the `.devcontainer` default to 69 as well.
+
 ---
 
 ## Docker Support
