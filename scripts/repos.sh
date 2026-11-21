@@ -13,14 +13,16 @@
 #   push     push every repo (and submodule) that has local commits on its branch
 #   mirror   copy all branches and tags of every repository (workspace, packages of both profiles,
 #            steve_essentials' submodules) from the fetch host to the other one; branches that
-#            diverged are reported, never overwritten
+#            diverged are reported, never overwritten. `mirror dev` copies GitLab -> GitHub (the
+#            contributors' dev work), `mirror test` GitHub -> GitLab
 # The profile defaults to the workspace's current branch. Shortcuts: git go-dev / git go-test
 # (any run adds them to the clone's git config)
 #
 # Every repository is on GitLab (hrl_software/steve-moma, `url` in the .repos files) and on GitHub
-# (`github`), except steve_wbc, steve_manipulation and steve_grasping, which are only on GitHub (`url`, no `github`). Clones fetch from one
-# host and push to both. The fetch host is $REPOS_HOST (gitlab or
-# github) or, if unset, the host the workspace's origin points at; sync moves every clone to it.
+# (`github`), except steve_wbc, steve_manipulation and steve_grasping, which are only on GitHub
+# (`url`, no `github`). The dev profile (contributors) fetches from and pushes to GitLab only; the
+# owner copies it to GitHub with `mirror dev`. The test profile fetches from $REPOS_HOST (gitlab or
+# github, default github) and pushes to both. sync moves every clone to its profile's host.
 #
 # Only plain git is needed. The .repos files are also vcstool-compatible.
 
@@ -82,8 +84,8 @@ set_remotes() {
     git -C "$dir" remote set-url origin "$fetch"
     warn "origin set to $fetch"
   fi
-  if [ -z "$github" ]; then
-    # Only on one host: push where it fetches from.
+  if [ -z "$github" ] || [ "$PROFILE" = dev ]; then
+    # Only on one host, or the dev profile (GitLab only): push where it fetches from.
     git -C "$dir" config --unset-all remote.origin.pushurl || true
     return 0
   fi
@@ -377,19 +379,19 @@ main() {
   git -C "$WS_DIR" config alias.go-dev '!./scripts/repos.sh sync dev'
   git -C "$WS_DIR" config alias.go-test '!./scripts/repos.sh sync test'
 
-  HOST=${REPOS_HOST:-}
-  if [ -z "$HOST" ]; then
-    case "$(git -C "$WS_DIR" remote get-url origin 2>/dev/null)" in
-      *github.com*) HOST=github ;;
-      *) HOST=gitlab ;;
-    esac
+  # dev (contributors) works on GitLab only; the owner mirrors it to GitHub (mirror dev). test
+  # fetches from $REPOS_HOST, default GitHub, and pushes to both.
+  if [ "$PROFILE" = dev ]; then
+    HOST=gitlab
+  else
+    HOST=${REPOS_HOST:-github}
   fi
   case "$HOST" in
     gitlab|github) ;;
     *) echo "REPOS_HOST must be gitlab or github, not '$HOST'" >&2; exit 1 ;;
   esac
 
-  echo "${BOLD}Profile: $PROFILE${RESET} ($(basename "$REPOS_FILE")), fetching from $HOST, pushing to both"
+  echo "${BOLD}Profile: $PROFILE${RESET} ($(basename "$REPOS_FILE")), fetching from $HOST, pushing to $([ "$PROFILE" = dev ] && echo "GitLab only" || echo both)"
 
   [ "$cmd" = status ] || unlock_ssh_keys
 
