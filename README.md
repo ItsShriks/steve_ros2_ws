@@ -207,6 +207,14 @@ When connecting to the physical robot (Ubuntu 20/22):
 
 Configure your network settings to match the robot's subnet for proper communication.
 
+**New laptop (Ubuntu 22.04 + ROS 2 Humble):** after cloning and `./scripts/repos.sh`, run once
+
+```bash
+./scripts/steve_laptop_setup.sh            # or: ./scripts/steve_laptop_setup.sh <wired interface>
+```
+
+It creates the NetworkManager connection `steve-robot` on the wired port (DHCP from the robot: the laptop gets `192.168.60.x`; never the default route, so internet stays on Wi-Fi), installs `~/.ros/fastdds_steve.xml` (unicast discovery, from `steve_hardware_bringup/config/fastdds_remote_pc.xml`) and `~/.ros/steve_dds.sh` (domain 69; Ethernet when the cable is in, else Wi-Fi), sources them from `~/.bashrc`, and pings the robot. Safe to run again; `--dds-only` skips the network part. Then open a new terminal: `ros2 daemon stop && ros2 topic list`.
+
 **ROS domain: `ROS_DOMAIN_ID=69`** for everyone working with Steve (the robot, the `dev` and `test` profiles, every PC and container). Nodes on another domain do not see the robot's topics. The robot sets it in `~/.bashrc` and `~/ROS_AUTOSTART.sh` (bringup at boot); on a PC, set it in every terminal (or `~/.bashrc`):
 
 ```bash
