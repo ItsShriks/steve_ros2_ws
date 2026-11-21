@@ -18,7 +18,7 @@
 # (any run adds them to the clone's git config)
 #
 # Every repository is on GitLab (hrl_software/steve-moma, `url` in the .repos files) and on GitHub
-# (`github`), except steve_wbc, which is only on GitHub (`url`, no `github`). Clones fetch from one
+# (`github`), except steve_wbc, steve_manipulation and steve_grasping, which are only on GitHub (`url`, no `github`). Clones fetch from one
 # host and push to both. The fetch host is $REPOS_HOST (gitlab or
 # github) or, if unset, the host the workspace's origin points at; sync moves every clone to it.
 #
