@@ -18,7 +18,8 @@
 # (any run adds them to the clone's git config)
 #
 # Every repository is on GitLab (hrl_software/steve-moma, `url` in the .repos files) and on GitHub
-# (`github`). Clones fetch from one host and push to both. The fetch host is $REPOS_HOST (gitlab or
+# (`github`), except steve_wbc, which is only on GitHub (`url`, no `github`). Clones fetch from one
+# host and push to both. The fetch host is $REPOS_HOST (gitlab or
 # github) or, if unset, the host the workspace's origin points at; sync moves every clone to it.
 #
 # Only plain git is needed. The .repos files are also vcstool-compatible.
@@ -74,7 +75,11 @@ set_remotes() {
     git -C "$dir" remote set-url origin "$fetch"
     warn "origin set to $fetch"
   fi
-  [ -n "$github" ] || return 0
+  if [ -z "$github" ]; then
+    # Only on one host: push where it fetches from.
+    git -C "$dir" config --unset-all remote.origin.pushurl || true
+    return 0
+  fi
   if [ "$(git -C "$dir" config --get-all remote.origin.pushurl | tr '\n' ' ')" != "$gitlab $github " ]; then
     git -C "$dir" config --unset-all remote.origin.pushurl || true
     git -C "$dir" config --add remote.origin.pushurl "$gitlab"

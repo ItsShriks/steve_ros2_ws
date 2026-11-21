@@ -1,7 +1,8 @@
 # Package repositories cloned into src/ (vcstool-compatible).
 # `url` is the GitLab repository, `github` its GitHub copy: repos.sh fetches from one host (the one the
-# workspace was cloned from, or $REPOS_HOST) and pushes to both. `version` is the branch each package
-# tracks. Change it here to switch branches.
+# workspace was cloned from, or $REPOS_HOST) and pushes to both. An entry without `github` is only on
+# that one `url` (steve_wbc: only on GitHub). `version` is the branch each package tracks. Change it
+# here to switch branches.
 # Sync with:  ./scripts/repos.sh sync dev   (or: git go-dev)
 repositories:
   steve_perception:
