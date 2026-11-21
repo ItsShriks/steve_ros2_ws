@@ -4,11 +4,13 @@
 #
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
-#            only the other profile lists are removed from src/, build/ and install/. Given a
+#            only the other profile lists are removed from src/, build/ and install/. Submodules
+#            of a package (steve_essentials) are put on the branch its .gitmodules names for
+#            them (`branch = ...`) and pulled the same way. Given a
 #            profile, sync first moves the workspace repo to the branch of the same name and
 #            deletes the local branch it left (unless that has unpushed commits).
-#   status   show branch, ahead/behind and local changes for every repo
-#   push     push every repo that has local commits on its branch
+#   status   show branch, ahead/behind and local changes for every repo (and submodule)
+#   push     push every repo (and submodule) that has local commits on its branch
 #   mirror   copy all branches and tags of every repository (workspace, packages of both profiles,
 #            steve_essentials' submodules) from the fetch host to the other one; branches that
 #            diverged are reported, never overwritten
@@ -96,12 +98,48 @@ sync_repo() {
     git clone --recurse-submodules --branch "$branch" "$(host_url "$HOST" "$url" "$github")" "$dir"
     set_remotes "$dir" "$url" "$github"
     ok "cloned"
-    return
+  else
+    set_remotes "$dir" "$url" "$github"
+    git -C "$dir" fetch --quiet origin
+    sync_repo_dir "$dir" "$branch" || return 1
   fi
+  sync_submodules "$dir" "$url" "$github"
+}
 
-  set_remotes "$dir" "$url" "$github"
-  git -C "$dir" fetch --quiet origin
-  sync_repo_dir "$dir" "$branch"
+# Prints "path branch" per submodule of the clone <dir> (branch empty if .gitmodules names none).
+submodules() {
+  local key path name
+  [ -f "$1/.gitmodules" ] || return 0
+  while read -r key path; do
+    name=${key#submodule.}; name=${name%.path}
+    echo "$path $(git config -f "$1/.gitmodules" "submodule.$name.branch" || true)"
+  done < <(git config -f "$1/.gitmodules" --get-regexp '^submodule\..*\.path$')
+}
+
+# Submodules of the package <dir> (e.g. steve_essentials) follow the branch its .gitmodules names
+# for them, like packages follow the .repos files: each is put on that branch and fast-forwarded
+# to origin, so it is always the latest of that branch rather than the commit the package pins.
+# A submodule without a branch stays at the pinned commit. Their URLs are relative
+# (../<name>.git), so they come from the package's fetch host; they push to both hosts.
+sync_submodules() {
+  local dir=$1 url=$2 github=$3 path branch sub rel failed_sub=0
+  [ -f "$dir/.gitmodules" ] || return 0
+  git -C "$dir" submodule sync --quiet
+  while read -r path branch; do
+    sub="$dir/$path"
+    if [ ! -e "$sub/.git" ] || [ -z "$branch" ]; then
+      git -C "$dir" submodule update --init --quiet -- "$path" || { err "$path: could not check out"; failed_sub=1; continue; }
+    fi
+    [ -n "$branch" ] || { ok "$path at the pinned commit"; continue; }
+    echo "   ${BOLD}$path ($branch)${RESET}"
+    rel=$(git config -f "$dir/.gitmodules" "submodule.$path.url" || true)
+    if [[ "$rel" == ../* ]]; then
+      rel=${rel#../}; rel=${rel%.git}
+      set_remotes "$sub" "$(sibling_url "$url" "$rel")" "${github:+$(sibling_url "$github" "$rel")}"
+    fi
+    git -C "$sub" fetch --quiet origin && sync_repo_dir "$sub" "$branch" || failed_sub=1
+  done < <(submodules "$dir")
+  return "$failed_sub"
 }
 
 # Switches an existing clone to <branch> and fast-forwards it to origin/<branch>.
@@ -111,7 +149,8 @@ sync_repo_dir() {
   local current
   current=$(git -C "$dir" branch --show-current)
   if [ "$current" != "$branch" ]; then
-    if [ -n "$(git -C "$dir" status --porcelain --untracked-files=no)" ]; then
+    # Submodules are not touched by a switch (sync puts them on their own branches).
+    if [ -n "$(git -C "$dir" status --porcelain --untracked-files=no --ignore-submodules=all)" ]; then
       err "on '${current:-detached HEAD}' with uncommitted changes, not switching to '$branch'"
       return 1
     fi
@@ -130,37 +169,50 @@ sync_repo_dir() {
     return 1
   fi
 
-  # Packages with their own submodules (e.g. steve_essentials) keep those at the pinned commits.
-  # Their URLs are relative (../<name>.git), so sync points them at the package's fetch host.
-  if [ -f "$dir/.gitmodules" ]; then
-    git -C "$dir" submodule sync --recursive --quiet
-    git -C "$dir" submodule update --init --recursive --quiet
-  fi
   ok "up to date at $(git -C "$dir" log -1 --format='%h %s')"
 }
 
 status_repo() {
-  local name=$1 branch=$3 dir="$SRC_DIR/$1"
+  local name=$1 branch=$3 dir="$SRC_DIR/$1" path sub_branch
+  status_dir "$name" "$dir" "$branch"
+  [ -e "$dir/.git" ] || return 0
+  while read -r path sub_branch; do
+    [ -n "$sub_branch" ] && status_dir "  $path" "$dir/$path" "$sub_branch"
+  done < <(submodules "$dir")
+}
+
+# One status line for the clone <dir> (shown as <label>) that should be on <branch>.
+# A package's submodule commits are not counted as changes (they follow their own branches).
+status_dir() {
+  local label=$1 dir=$2 branch=$3
   if [ ! -e "$dir/.git" ]; then
-    printf "%-28s %s\n" "$name" "${RED}missing (run sync)${RESET}"
+    printf "%-28s %s\n" "$label" "${RED}missing (run sync)${RESET}"
     return
   fi
   local current ahead behind changes=""
   current=$(git -C "$dir" branch --show-current)
   read -r ahead behind < <(git -C "$dir" rev-list --left-right --count "HEAD...origin/$branch" 2>/dev/null || echo "? ?")
-  [ -n "$(git -C "$dir" status --porcelain)" ] && changes=" ${YELLOW}[modified]${RESET}"
+  [ -n "$(git -C "$dir" status --porcelain --ignore-submodules=all)" ] && changes=" ${YELLOW}[modified]${RESET}"
   local where="${current:-detached}"
   [ "$where" != "$branch" ] && where="${RED}$where (expected $branch)${RESET}"
-  printf "%-28s %-12s ahead %s, behind %s%s\n" "$name" "$where" "$ahead" "$behind" "$changes"
+  printf "%-28s %-12s ahead %s, behind %s%s\n" "$label" "$where" "$ahead" "$behind" "$changes"
 }
 
 push_repo() {
-  local name=$1 branch=$3 dir="$SRC_DIR/$1"
+  local name=$1 branch=$3 dir="$SRC_DIR/$1" path sub_branch
   [ -e "$dir/.git" ] || return 0
-  local ahead
+  push_dir "$name" "$dir" "$branch"
+  while read -r path sub_branch; do
+    [ -n "$sub_branch" ] && [ -e "$dir/$path/.git" ] && push_dir "$name/$path" "$dir/$path" "$sub_branch"
+  done < <(submodules "$dir")
+  return 0
+}
+
+push_dir() {
+  local label=$1 dir=$2 branch=$3 ahead
   ahead=$(git -C "$dir" rev-list --count "origin/$branch..$branch" 2>/dev/null || echo 0)
   if [ "$ahead" -gt 0 ]; then
-    info "$name: pushing $ahead commit(s) to origin/$branch (GitLab and GitHub)"
+    info "$label: pushing $ahead commit(s) to origin/$branch (GitLab and GitHub)"
     git -C "$dir" push origin "$branch"
   fi
 }
