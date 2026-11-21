@@ -270,6 +270,18 @@ remove_builds() {
   done
 }
 
+# A --symlink-install build links build/ and install/ to files in src/. Files only the other branch
+# has leave dangling links after a switch, and colcon then fails ("can't copy ...: doesn't exist or not
+# a regular file"); they are deleted, the next build recreates what the branch has.
+remove_stale_links() {
+  local d n
+  for d in "$WS_DIR/build" "$WS_DIR/install"; do
+    [ -d "$d" ] || continue
+    n=$(find "$d" -xtype l -print -delete | wc -l)
+    [ "$n" -eq 0 ] || warn "removed $n dangling link(s) from ${d#"$WS_DIR"/}/ (files of the other branch)"
+  done
+}
+
 # Packages another profile lists but this one does not are deleted from src/; syncing that profile
 # clones them again. Clones with uncommitted changes or unpushed commits are kept.
 remove_repos() {
@@ -393,6 +405,7 @@ main() {
 
   if [ "$cmd" = sync ]; then
     remove_repos $(known_repos)
+    remove_stale_links
   fi
 
   if [ "$failed" -ne 0 ]; then
