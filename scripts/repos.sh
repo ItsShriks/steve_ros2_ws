@@ -5,7 +5,7 @@
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
 #            only the other profile lists are removed from src/, build/ and install/; folders no
-#            profile lists are kept, but not built on test (COLCON_IGNORE). Submodules
+#            profile lists are moved to .parked/ on test and back to src/ on dev. Submodules
 #            of a package (steve_essentials) are put on the branch its .gitmodules names for
 #            them (`branch = ...`) and pulled the same way. Given a
 #            profile, sync first moves the workspace repo to the branch of the same name and
@@ -281,29 +281,49 @@ remove_builds() {
 }
 
 # Folders in src/ that no profile lists (e.g. a contributor's own clone) are never deleted. On test
-# they get a COLCON_IGNORE, so they are not built there, and their build/ and install/ are removed;
-# on dev the COLCON_IGNORE is taken off again. Only a COLCON_IGNORE this script made is removed.
-IGNORE_MARK="# added by scripts/repos.sh: not built on the test profile"
-ignore_unlisted() {
+# they are moved out of src/ to .parked/ (not built, not found by ROS; uncommitted work stays in
+# them) and their build/ and install/ are removed; on dev they are moved back to src/.
+PARK_DIR="$WS_DIR/.parked"
+OLD_IGNORE_MARK="# added by scripts/repos.sh: not built on the test profile"
+park_unlisted() {
   local known dir name
   known=$(known_repos)
-  for dir in "$SRC_DIR"/*/; do
-    dir=${dir%/}; name=$(basename "$dir")
-    grep -qx "$name" <<<"$known" && continue
-    if [ "$PROFILE" = test ]; then
-      [ -e "$dir/COLCON_IGNORE" ] && continue
-      remove_builds "$dir"
-      echo "$IGNORE_MARK" > "$dir/COLCON_IGNORE"
-      # Keep the marker out of that clone's git status.
-      if [ -d "$dir/.git" ] && ! grep -qx COLCON_IGNORE "$dir/.git/info/exclude" 2>/dev/null; then
-        mkdir -p "$dir/.git/info" && echo COLCON_IGNORE >> "$dir/.git/info/exclude"
+  if [ "$PROFILE" = test ]; then
+    for dir in "$SRC_DIR"/*/; do
+      [ -d "$dir" ] || continue
+      dir=${dir%/}; name=$(basename "$dir")
+      grep -qx "$name" <<<"$known" && continue
+      info "$name"
+      if [ -e "$PARK_DIR/$name" ]; then
+        err "not in the test profile, but .parked/$name already exists; not moved"
+        failed=1
+        continue
       fi
-      info "$name"; warn "not in any profile, kept but not built on test (COLCON_IGNORE)"
-    elif [ "$(cat "$dir/COLCON_IGNORE" 2>/dev/null)" = "$IGNORE_MARK" ]; then
-      rm -f "$dir/COLCON_IGNORE"
-      info "$name"; ok "not in any profile, built again on $PROFILE (COLCON_IGNORE removed)"
+      remove_builds "$dir"
+      [ "$(cat "$dir/COLCON_IGNORE" 2>/dev/null)" = "$OLD_IGNORE_MARK" ] && rm -f "$dir/COLCON_IGNORE"
+      # colcon must not find the parked packages when building from the workspace root.
+      mkdir -p "$PARK_DIR" && touch "$PARK_DIR/COLCON_IGNORE"
+      mv "$dir" "$PARK_DIR/$name"
+      warn "not in the test profile, moved to .parked/$name (moved back by git go-dev)"
+    done
+  else
+    for dir in "$PARK_DIR"/*/; do
+      [ -d "$dir" ] || continue
+      dir=${dir%/}; name=$(basename "$dir")
+      info "$name"
+      if [ -e "$SRC_DIR/$name" ]; then
+        err "parked in .parked/$name, but src/$name exists too; not moved back"
+        failed=1
+        continue
+      fi
+      mv "$dir" "$SRC_DIR/$name"
+      ok "moved back to src/ from .parked/"
+    done
+    # Its COLCON_IGNORE stays while anything is still parked.
+    if [ -d "$PARK_DIR" ] && [ -z "$(find "$PARK_DIR" -mindepth 1 -maxdepth 1 -type d)" ]; then
+      rm -f "$PARK_DIR/COLCON_IGNORE"; rmdir "$PARK_DIR" 2>/dev/null || true
     fi
-  done
+  fi
 }
 
 # A --symlink-install build links build/ and install/ to files in src/. Files only the other branch
@@ -458,7 +478,7 @@ main() {
 
   if [ "$cmd" = sync ]; then
     remove_repos $(known_repos)
-    ignore_unlisted
+    park_unlisted
     remove_stale_links
   fi
 

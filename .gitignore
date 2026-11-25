@@ -102,6 +102,9 @@ perception_tests/
 # Every package in src/ is its own clone; none are tracked in this repo.
 src/*
 
+# Folders no profile lists, moved out of src/ while on test (scripts/repos.sh)
+.parked/
+
 # pixi environments
 .pixi/*
 !.pixi/config.toml
