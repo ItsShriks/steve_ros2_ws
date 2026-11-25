@@ -4,7 +4,8 @@
 #
 # Usage: ./scripts/repos.sh [command] [dev|test]
 #   sync     (default) clone missing repos, check out their branch, pull latest; packages
-#            only the other profile lists are removed from src/, build/ and install/. Submodules
+#            only the other profile lists are removed from src/, build/ and install/; folders no
+#            profile lists are kept, but not built on test (COLCON_IGNORE). Submodules
 #            of a package (steve_essentials) are put on the branch its .gitmodules names for
 #            them (`branch = ...`) and pulled the same way. Given a
 #            profile, sync first moves the workspace repo to the branch of the same name and
@@ -279,6 +280,32 @@ remove_builds() {
   done
 }
 
+# Folders in src/ that no profile lists (e.g. a contributor's own clone) are never deleted. On test
+# they get a COLCON_IGNORE, so they are not built there, and their build/ and install/ are removed;
+# on dev the COLCON_IGNORE is taken off again. Only a COLCON_IGNORE this script made is removed.
+IGNORE_MARK="# added by scripts/repos.sh: not built on the test profile"
+ignore_unlisted() {
+  local known dir name
+  known=$(known_repos)
+  for dir in "$SRC_DIR"/*/; do
+    dir=${dir%/}; name=$(basename "$dir")
+    grep -qx "$name" <<<"$known" && continue
+    if [ "$PROFILE" = test ]; then
+      [ -e "$dir/COLCON_IGNORE" ] && continue
+      remove_builds "$dir"
+      echo "$IGNORE_MARK" > "$dir/COLCON_IGNORE"
+      # Keep the marker out of that clone's git status.
+      if [ -d "$dir/.git" ] && ! grep -qx COLCON_IGNORE "$dir/.git/info/exclude" 2>/dev/null; then
+        mkdir -p "$dir/.git/info" && echo COLCON_IGNORE >> "$dir/.git/info/exclude"
+      fi
+      info "$name"; warn "not in any profile, kept but not built on test (COLCON_IGNORE)"
+    elif [ "$(cat "$dir/COLCON_IGNORE" 2>/dev/null)" = "$IGNORE_MARK" ]; then
+      rm -f "$dir/COLCON_IGNORE"
+      info "$name"; ok "not in any profile, built again on $PROFILE (COLCON_IGNORE removed)"
+    fi
+  done
+}
+
 # A --symlink-install build links build/ and install/ to files in src/. Files only the other branch
 # has leave dangling links after a switch, and colcon then fails ("can't copy ...: doesn't exist or not
 # a regular file"); they are deleted, the next build recreates what the branch has.
@@ -431,6 +458,7 @@ main() {
 
   if [ "$cmd" = sync ]; then
     remove_repos $(known_repos)
+    ignore_unlisted
     remove_stale_links
   fi
 
