@@ -7,7 +7,7 @@
 #   terminal 3:  ~/Master_Thesis/steve_ros2_ws/scripts/gripper_camera_calib_poses.sh [HOLD_S] [--from N] [--dry-run]
 #
 # Setup the poses were computed for (2026-11-11, WBC model with the 2F-85 + DROID mount):
-#   * the ball (target profile my_ball) 0.70 m in front of the base centre (the NEOBOTIX side, base +x), on the
+#   * the ball (target profile red) 0.70 m in front of the base centre (the NEOBOTIX side, base +x), on the
 #     robot's centre line, on the table (top ~0.83 m); the table's near edge >= 0.50 m from the base centre
 #   * the base does not move; nothing else on the table near the ball
 #   * every view points the gripper at (a few cm beside) the ball from 0.40-0.55 m: whichever side the camera is
